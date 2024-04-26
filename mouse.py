@@ -16,7 +16,7 @@ LB = LED(27)
 RB = LED(22)
 
 # USB mouse events location
-MOUSE_EVENTS = "/dev/input/event0" # Mouse events
+USB_DEVICE = "/dev/input/event0" # Mouse events
 
 # Slow down mouse motion -> Divide mouse speed by MOUSE_SCALE
 MOUSE_SCALE = 2
@@ -25,6 +25,7 @@ REFRESH_PERIOD = 1 / 70 # Mouse is polled at 62.5 Hz (obtained using evtest)
 MAX_TICK_PERIOD = REFRESH_PERIOD / 2
 MIN_TICK_PERIOD = 1 / 2000 # 2 KHz
 TICK_PERIOD_DECAY = 1.01
+STATS_PERIOD = 0.5 # seconds
 
 A_SIGNAL = (0, 1, 1, 0)
 B_SIGNAL = (0, 0, 1, 1)
@@ -32,7 +33,7 @@ B_SIGNAL = (0, 0, 1, 1)
 # Constants for the event structure
 # https://www.kernel.org/doc/html/latest/input/input.html
 # https://docs.python.org/3/library/struct.html
-EVENT_FORMAT = 'llHHi'  # long long, uint16_t, uint16_t, uint32_t
+EVENT_FORMAT = 'llHHi'  # long, long, uint16_t, uint16_t, uint32_t
 EVENT_SIZE = struct.calcsize(EVENT_FORMAT)
 
 # Events types
@@ -51,6 +52,7 @@ class StMouse:
                 self.x_delta = 0
                 self.y_delta = 0
                 self.tick_period = MAX_TICK_PERIOD
+                self.last_evtime = 0
                 LB.on()
                 RB.on()
 
@@ -70,22 +72,42 @@ class StMouse:
                 else: YB.off()
 
         def btn_left(self, val):
-                #print(f"btn_left: {val}")
                 if val: LB.off()
                 else  : LB.on()
 
         def btn_right(self, val):
-                #print(f"btn_right: {val}")
                 if val: RB.off()
                 else  : RB.on()
-                
+
         def x_move(self, val):
-                #print(f"Val: {val} - Tick {int(self.get_tick_period() * 1e6)} - Remaining x_delta: {self.x_delta}")
                 self.x_delta += val
 
         def y_move(self, val):
-                #print(f"Val: {val} - Tick {int(self.get_tick_period() * 1e6)} - Remaining y_delta: {self.y_delta}")
                 self.y_delta += val
+
+        def update_tick_period(self, ev_time):
+                self.last_evtime = ev_time
+                delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / MOUSE_SCALE
+                if delta_steps >= 1:
+                        self.tick_period = REFRESH_PERIOD / delta_steps
+                        self.tick_period = max( self.tick_period, MIN_TICK_PERIOD )
+                        self.tick_period = min( self.tick_period, MAX_TICK_PERIOD )
+
+        def current_delay(self):
+                delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / MOUSE_SCALE
+                if delta_steps < 1:
+                        return 0.0
+                evt_delay = time.time() - self.last_evtime
+                sig_delay = evt_delay + delta_steps * self.tick_period
+                return sig_delay
+
+        def decay_tick_period(self):
+                if abs(self.x_delta) < MOUSE_SCALE and abs(self.y_delta) < MOUSE_SCALE:
+                        self.tick_period = self.tick_period * TICK_PERIOD_DECAY
+                        self.tick_period = min(self.tick_period, MAX_TICK_PERIOD)
+
+        def get_tick_period(self):
+                return self.tick_period
 
         def signals_tick(self):
                 # Move mouse pointer
@@ -98,19 +120,25 @@ class StMouse:
                         inc = MOUSE_SCALE * self.y_delta // abs(self.y_delta)
                         self.y_delta -= inc
                         self.y_step(inc // MOUSE_SCALE)
+                self.decay_tick_period()
 
-        def update_tick_period(self):
-                delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / MOUSE_SCALE
-                if delta_steps >= 1:
-                        self.tick_period = min(self.tick_period, REFRESH_PERIOD/delta_steps)
-                        self.tick_period = max(self.tick_period, MIN_TICK_PERIOD)
-                else:
-                        self.tick_period = self.tick_period * TICK_PERIOD_DECAY
-                        self.tick_period = min(self.tick_period, MAX_TICK_PERIOD)
+        def process_events(self, events):
+                for  ev_sec, ev_us, ev_type, ev_code, ev_value in events:
+                        if ev_type == EV_REL:
+                                if   ev_code == REL_X: self.x_move(ev_value)
+                                elif ev_code == REL_Y: self.y_move(ev_value)
+                        elif ev_type == EV_KEY:
+                                if   ev_code == BTN_LEFT : self.btn_left(ev_value)
+                                elif ev_code == BTN_RIGHT: self.btn_right(ev_value)
+                        ev_time = ev_sec + ev_us*1e-6
+                        self.update_tick_period(ev_time)
 
-        def get_tick_period(self):
-                return self.tick_period
-                
+        def display_stats(self):
+                delay_ms = int(self.current_delay() * 1e3)
+                tick_us = int(self.get_tick_period() * 1e6)
+                stats = f"Tick: {tick_us} us"
+                if delay_ms: stats += f" - Delay: {delay_ms} ms"
+                print(stats)
 
 class UsbMouse:
         def __init__(self, device):
@@ -119,32 +147,29 @@ class UsbMouse:
                 flag = fcntl.fcntl(fd, fcntl.F_GETFL)
                 fcntl.fcntl(fd, fcntl.F_SETFL, flag | os.O_NONBLOCK)
 
-        def process_events(self, st_mouse):
+        def get_events(self):
                 """Process every event in the USB device file"""
+                rv = []
                 event_data = self.device.read(EVENT_SIZE)
                 while event_data:
-                        event = struct.unpack(EVENT_FORMAT, event_data)
-                        #print(f"Time: {event[0]}.{event[1]}, Type: {event[2]}, Code: {event[3]}, Value: {event[4]}")
-                        _, _, ev_type, ev_code, ev_value = event
-                        if ev_type == EV_REL:
-                                if   ev_code == REL_X: st_mouse.x_move(ev_value)
-                                elif ev_code == REL_Y: st_mouse.y_move(ev_value)
-                        elif ev_type == EV_KEY:
-                                if   ev_code == BTN_LEFT : st_mouse.btn_left(ev_value)
-                                elif ev_code == BTN_RIGHT: st_mouse.btn_right(ev_value)
+                        rv.append( struct.unpack(EVENT_FORMAT, event_data) )
                         event_data = self.device.read(EVENT_SIZE)
-
+                return rv
 
 def main():
         sm = StMouse()
-        um = UsbMouse(MOUSE_EVENTS)
+        um = UsbMouse(USB_DEVICE)
 
-        next_tick = time.monotonic()
+        next_tick = time.monotonic() # time.monotonic is more accurate than time.time
+        next_stat = next_tick
         while True:
-                um.process_events(sm)
+                sm.process_events(um.get_events())
                 sm.signals_tick()
-                sm.update_tick_period()
                 next_tick += sm.get_tick_period()
+                # Display some statistics
+                if time.monotonic() > next_stat:
+                        sm.display_stats()
+                        next_stat += STATS_PERIOD
                 try:
                         time.sleep( next_tick - time.monotonic() )
                 except ValueError:
