@@ -62,10 +62,10 @@ usage.
 ## Links
 
 - [Incremental encoder on Wikipedia][4]: describes the mouse signal
-  expected by the Atari ST.
+  expected by the Atari ST ;
 - [ATARIPiMouse Github][1]: inspiration for writing the emulator in Python ;
 - [Yaumataca][2]: inspiration for the "quadrature encoder" ;
-- [Atari-Quadrature-USB-Mouse-Adapter][3].
+- [Atari-Quadrature-USB-Mouse-Adapter][3]
 
 [1]: https://github.com/backofficeshow/ATARIPiMouse
 [2]: https://github.com/Slamy/Yaumataca
