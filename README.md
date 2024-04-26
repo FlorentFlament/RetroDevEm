@@ -1,19 +1,19 @@
-Title: FSEmuDev
+Title: RetroDevEm
 
-FSEmuDev (Free Software Emulated Device) is a free input devices
-(mouse and joystick) emulator for old consoles and computers (Atari
-ST, Amstrad CPC, Atari 2600, ...).  It allows using any input device,
-recognized by Linux on the Raspberry Pi, on unmodifed retro machines.
-Programs collect events from input devices and send the corresponding
-signals to the console or computer.
+RetroDevEm (Retro Device Emulator) is a free (as in Free Software)
+input devices (mouse and joystick) emulator for retro consoles and
+computers (Atari 2600, Atari ST, Amstrad CPC, ...).  It allows using
+any input device, recognized by Linux on the Raspberry Pi, on
+unmodifed retro machines.  Programs collect events from input devices
+and send the corresponding signals to the console or computer.
 
-<img src="fsemudev-illustration-1024x673.png" alt="FSEmuDev illustration"/>
+<img src="retrodevem-illustration-1024x673.png" alt="RetroDevEm illustration"/>
 
 # Project focus
 
 This project focuses on:
 - Using off the shelf hardware ;
-- Devices accuracy and near-zero latency ;
+- Devices accuracy and low latency ;
 - Simplicity ;
 - Low CPU usage.
 
@@ -35,10 +35,8 @@ The following hardware is currently used:
 - 1 DB9 female connector ;
 - and a bread board with some wires to connect things.
 
-The electronic components only act as buffers between the Raspberry Pi
-I/O pins and the machine port.
-
-This may evolve over time.
+The electronic components only act a buffer between the Raspberry Pi
+I/O pins and the machine port.  This may evolve over time.
 
 ## Schematics
 
@@ -48,7 +46,7 @@ TBD
 
 A Python program, running on a Raspberry Pi, processes the events from
 an input device and send the corresponding signals to the retro
-machine connected to the Raspberry Pi.
+machine connected to the Raspberry Pi over GPIOs.
 
 - `atari-mouse.py` emulates the Atari ST mouse.  Displays latency and
   sample rate statistics.
