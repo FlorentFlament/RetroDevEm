@@ -12,11 +12,11 @@ XA = LED(2)
 XB = LED(3)
 YA = LED(17) # YA & YB are in reverse order compared to Atari ST internals
 YB = LED(4)
-LB = LED(27)
-RB = LED(22)
+LB = LED(27) # Left mouse button
+RB = LED(22) # Right mouse button
 
 # USB mouse events location
-USB_DEVICE = "/dev/input/event0" # Mouse events
+USB_DEVICE = "/dev/input/event0"
 
 # Slow down mouse motion -> Divide mouse speed by MOUSE_SCALE
 MOUSE_SCALE = 2
@@ -54,9 +54,8 @@ class StMouse:
                 self.x_delta = 0
                 self.y_delta = 0
                 self.tick_period = MAX_TICK_PERIOD
-                self.last_evtime = 0
                 self.worst_delay = 0
-                LB.on()
+                LB.on() # Button not pressed
                 RB.on()
 
         def x_step(self, dir):
