@@ -1,4 +1,4 @@
-Title: RetroDevEm
+# RetroDevEm
 
 RetroDevEm (Retro Device Emulator) is a free (as in Free Software)
 input devices (mouse and joystick) emulator for retro consoles and
@@ -9,7 +9,7 @@ and send the corresponding signals to the console or computer.
 
 <img src="retrodevem-illustration-1024x673.png" alt="RetroDevEm illustration"/>
 
-# Project focus
+## Project focus
 
 This project focuses on:
 - Using off the shelf hardware ;
@@ -17,16 +17,16 @@ This project focuses on:
 - Simplicity ;
 - Low CPU usage.
 
-# Rationale
+## Rationale
 
 I bought a 30 Euros Atari ST mouse adapter from a hobbyist.  It only
 works with ps/2 mice and the accuracy is okish.  Especially with slow
 movements, the Atari ST pointer accuracy is bad.  So why not do
 something better and make it free software ?
 
-# Project details
+## Project details
 
-## Hardware
+### Hardware
 
 The following hardware is currently used:
 - a Raspberry PI (using the RPI 4B, though any should do) ;
@@ -38,11 +38,11 @@ The following hardware is currently used:
 The electronic components only act a buffer between the Raspberry Pi
 I/O pins and the machine port.  This may evolve over time.
 
-## Schematics
+### Schematics
 
 TBD
 
-## Software
+### Software
 
 A Python program, running on a Raspberry Pi, processes the events from
 an input device and send the corresponding signals to the retro
@@ -51,15 +51,15 @@ machine connected to the Raspberry Pi over GPIOs.
 - `atari-mouse.py` emulates the Atari ST mouse.  Displays latency and
   sample rate statistics.
 
-# Current status
+## Current status
 
-## Atari ST
+### Atari ST
 
 Mouse emulation is working nicely.  Latency is below 20 ms (i.e 1
 frame at 50 Hz) and CPU usage is below 10% of a core, for normal
 usage.
 
-# Links
+## Links
 
 - [Incremental encoder on Wikipedia][4]: describes the mouse signal
   expected by the Atari ST.
