@@ -21,7 +21,9 @@ USB_DEVICE = "/dev/input/event0" # Mouse events
 # Slow down mouse motion -> Divide mouse speed by MOUSE_SCALE
 MOUSE_SCALE = 2
 
-REFRESH_PERIOD = 1 / 100 # Mouse is polled at 62.5 Hz (obtained using evtest)
+# Mouse is polled at 62.5 Hz (obtained using evtest)
+# Atari ST screen vertical freq in 50 Hz
+REFRESH_PERIOD = 1 / 80
 MAX_TICK_PERIOD = REFRESH_PERIOD / 2
 MIN_TICK_PERIOD = 1 / 2000 # 2 KHz
 TICK_PERIOD_DECAY = 1.01
@@ -89,19 +91,20 @@ class StMouse:
         def update_tick_period(self):
                 delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / MOUSE_SCALE
                 if delta_steps >= 1:
-                        self.tick_period = REFRESH_PERIOD / delta_steps
+                        self.tick_period = min( self.tick_period, REFRESH_PERIOD / delta_steps ) # Only faster
                         self.tick_period = max( self.tick_period, MIN_TICK_PERIOD )
                         self.tick_period = min( self.tick_period, MAX_TICK_PERIOD )
 
         def update_worst_delay(self, ev_time):
                 delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / MOUSE_SCALE
-                if delta_steps >= 1:
+                if delta_steps >= 1: # We can't tell if we don't have any step in queue
                         evt_delay = time.time() - ev_time
                         sig_delay = evt_delay + delta_steps * self.tick_period
                         self.worst_delay = max(self.worst_delay, sig_delay)
 
         def decay_tick_period(self):
-                if abs(self.x_delta) < MOUSE_SCALE and abs(self.y_delta) < MOUSE_SCALE:
+                delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / MOUSE_SCALE
+                if delta_steps < 1:
                         self.tick_period = self.tick_period * TICK_PERIOD_DECAY
                         self.tick_period = min(self.tick_period, MAX_TICK_PERIOD)
 
