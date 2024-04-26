@@ -21,7 +21,7 @@ USB_DEVICE = "/dev/input/event0" # Mouse events
 # Slow down mouse motion -> Divide mouse speed by MOUSE_SCALE
 MOUSE_SCALE = 2
 
-REFRESH_PERIOD = 1 / 70 # Mouse is polled at 62.5 Hz (obtained using evtest)
+REFRESH_PERIOD = 1 / 100 # Mouse is polled at 62.5 Hz (obtained using evtest)
 MAX_TICK_PERIOD = REFRESH_PERIOD / 2
 MIN_TICK_PERIOD = 1 / 2000 # 2 KHz
 TICK_PERIOD_DECAY = 1.01
@@ -53,6 +53,7 @@ class StMouse:
                 self.y_delta = 0
                 self.tick_period = MAX_TICK_PERIOD
                 self.last_evtime = 0
+                self.worst_delay = 0
                 LB.on()
                 RB.on()
 
@@ -85,21 +86,19 @@ class StMouse:
         def y_move(self, val):
                 self.y_delta += val
 
-        def update_tick_period(self, ev_time):
-                self.last_evtime = ev_time
+        def update_tick_period(self):
                 delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / MOUSE_SCALE
                 if delta_steps >= 1:
                         self.tick_period = REFRESH_PERIOD / delta_steps
                         self.tick_period = max( self.tick_period, MIN_TICK_PERIOD )
                         self.tick_period = min( self.tick_period, MAX_TICK_PERIOD )
 
-        def current_delay(self):
+        def update_worst_delay(self, ev_time):
                 delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / MOUSE_SCALE
-                if delta_steps < 1:
-                        return 0.0
-                evt_delay = time.time() - self.last_evtime
-                sig_delay = evt_delay + delta_steps * self.tick_period
-                return sig_delay
+                if delta_steps >= 1:
+                        evt_delay = time.time() - ev_time
+                        sig_delay = evt_delay + delta_steps * self.tick_period
+                        self.worst_delay = max(self.worst_delay, sig_delay)
 
         def decay_tick_period(self):
                 if abs(self.x_delta) < MOUSE_SCALE and abs(self.y_delta) < MOUSE_SCALE:
@@ -130,14 +129,15 @@ class StMouse:
                         elif ev_type == EV_KEY:
                                 if   ev_code == BTN_LEFT : self.btn_left(ev_value)
                                 elif ev_code == BTN_RIGHT: self.btn_right(ev_value)
-                        ev_time = ev_sec + ev_us*1e-6
-                        self.update_tick_period(ev_time)
+                        self.update_tick_period()
+                        self.update_worst_delay(ev_sec + ev_us*1e-6)
 
         def display_stats(self):
-                delay_ms = int(self.current_delay() * 1e3)
-                tick_us = int(self.get_tick_period() * 1e6)
+                tick_us  = int(self.get_tick_period() * 1e6)
+                delay_ms = int(self.worst_delay * 1e3)
                 stats = f"Tick: {tick_us} us"
                 if delay_ms: stats += f" - Delay: {delay_ms} ms"
+                self.worst_delay = 0
                 print(stats)
 
 class UsbMouse:
