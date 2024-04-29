@@ -8,8 +8,8 @@ from gpiozero import LED
 # Update according to board design
 XA = LED(2)
 XB = LED(3)
-YA = LED(17) # YA & YB are in reverse order compared to Atari ST internals
-YB = LED(4)
+YA = LED(4)
+YB = LED(17)
 LB = LED(27) # Left mouse button
 RB = LED(22) # Right mouse button
 
@@ -66,10 +66,10 @@ class StMouse:
 
     def y_step(self, dir):
         self.y_state = (self.y_state + dir) % 4
-        if A_SIGNAL[self.y_state]: YA.on()
-        else: YA.off()
-        if B_SIGNAL[self.y_state]: YB.on()
+        if A_SIGNAL[self.y_state]: YB.on()
         else: YB.off()
+        if B_SIGNAL[self.y_state]: YA.on()
+        else: YA.off()
 
     def btn_left(self, val):
         if val: LB.off()
