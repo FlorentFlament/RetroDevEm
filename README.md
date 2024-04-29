@@ -11,7 +11,7 @@ The project consists of 2 components:
 - Hardware: A daughter printed circuit board, to be plugged on a Raspberry Pi;
 - Software: Programs running on the Raspberry Pi.
 
-<img src="retrodevem-illustration-1024x673.png" alt="RetroDevEm illustration"/>
+<img src="pictures/retrodevem-illustration-1024x673.png" alt="RetroDevEm illustration"/>
 
 ## Project focus
 
@@ -90,7 +90,7 @@ The first version will focus on the following use cases:
 
 #### Schematics
 
-<img src="retrodevem-schematic.png" alt="RetroDevEm schematic"/>
+<img src="pictures/retrodevem-schematic.png" alt="RetroDevEm schematic"/>
 
 ### Software
 
@@ -98,8 +98,8 @@ A Python program, running on a Raspberry Pi, processes the events from
 an input device and send the corresponding signals to the retro
 machine connected to the Raspberry Pi over GPIOs.
 
-- `atari-mouse.py` emulates the Atari ST mouse.  Displays latency and
-  sample rate statistics.
+- [`atari-mouse.py`](src/atari-mouse.py) emulates the Atari ST mouse.
+  Displays latency and sample rate statistics.
 
 ## Current status
 
