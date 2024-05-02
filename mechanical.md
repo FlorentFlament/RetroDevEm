@@ -42,5 +42,5 @@ Height wthout strain relief: 10.58 mm
 
 # Drawing
 
-[RetroDevEm pencil mechanical drawing](pictures/retrodevem-pencil-mechanical-drawing.pdf)
-[RetroDevEm pen mechanical drawing](pictures/retrodevem-pen-mechanical-drawing.pdf)
+- [RetroDevEm pencil mechanical drawing](pictures/retrodevem-pencil-mechanical-drawing.pdf)
+- [RetroDevEm pen mechanical drawing](pictures/retrodevem-pen-mechanical-drawing.pdf)
