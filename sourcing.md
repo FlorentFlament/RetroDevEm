@@ -26,12 +26,12 @@ are in Euros.
 | Count | Reference              | Description                  | Unit Price(+) | Total Price |
 |-------|------------------------|------------------------------|---------------|-------------|
 | 4     | Ettinger 005.02.113    | female/female M2.5 11mm      | 0.312         | 1.248       |
-| 4     | Ettinger 005.12.055    | male/female M2.5, 5mm, 11mm  | 0.299         | 1.196       |
+| 4     | Ettinger 005.12.083    | male/female M2.5, 8mm, 14mm  | 0.307         | 1.228       |
 | 4     | Ettinger 005.12.173    | male/female M2.5, 17mm, 23mm | 0.384         | 1.536       |
 | 4     | Ettinger 017.52.080    | foot round 2.8mm * 8mm       | 0.30          | 1.2         |
 | 8     | Multicomp Pro MP007339 | vis M2.5 6mm                 | 0.10(++)      | 0.8         |
 |-------|------------------------|------------------------------|---------------|-------------|
-|       |                        | Total                        |               | 5.98        |
+|       |                        | Total                        |               | 6.012       |
 
 (+) On Farnell
 (++) Lot of 50 for 5.01 E (/ 5.01 50)
