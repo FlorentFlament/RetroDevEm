@@ -13,6 +13,11 @@ The project consists of 2 components:
 
 <img src="pictures/retrodevem-illustration-1024x673.png" alt="RetroDevEm illustration"/>
 
+The daughter board can be connected to the retro machines via DB-9
+terminated ribbon cables.
+
+DB-9 <- ribbon cable -> 2x5 pins IDC connector
+
 ## Project focus
 
 This project focuses on:
@@ -34,32 +39,37 @@ something better and make it free software ?
 
 A PCB (Printed Circuit Board), with:
 - 2x ULN2003AN ICs (7 Darlington transistors per IC)
-- 14 resistors
-- 1x 40 pins Raspberry Pi connector
-- 2x 9 pins DB9 cables connectors
+- 14 47 KOhms resistors (optional)
+- 1x 40 pins socket (Raspberry Pi connector)
+- 2x 10 pins headers (Atari ports connectors)
 
 #### Board wiring
 
-| RPI sig | RPI pin | DB9 pins | ULN2003AN     | Atari ST              | Amstrad CPC      | Atari 2600     |
-|---------|---------|----------|---------------|-----------------------|------------------|----------------|
-| GPIO2   | 3       | P0 1     |               | P0 XB / Up            | Up               | Up             |
-| GPIO3   | 5       | P0 2     |               | P0 XA / Down          | Down             | Down           |
-| GPIO4   | 7       | P0 3     |               | P0 YA / Left          | Left             | Left           |
-| GPIO17  | 11      | P0 4     |               | P0 YB / Right         | Right            | Right          |
-| GPIO27  | 13      | P0 5     |               | P0 Port 0 enable      | Fire 3 (undoc)   | Pot 0 (analog) |
-| GPIO22  | 15      | P0 6     |               | P0 Left Button / Fire | Fire 2 (default) | Fire           |
-|         |         | P0 7     | COM (flyback) | P0 +5V                | Fire 1 (extra)   | +5V            |
-| GND     | 6,9,... | P0 8     |               | P1 GND                | COM1 (GND Joy 1) | GND            |
-| GPIO10  | 19      | P0 9     |               | P0 Right Button       | COM2 (GND Joy 2) | Pot 1 (analog) |
-| GPIO9   | 21      | P1 1     |               | P1 XB / Up            |                  |                |
-| GPIO11  | 23      | P1 2     |               | P1 XA / Down          |                  |                |
-| GPIO0   | 27      | P1 3     |               | P1 YA / Left          |                  |                |
-| GPIO5   | 29      | P1 4     |               | P1 YB / Right         |                  |                |
-| GPIO6   | 31      | P1 5     |               | P1 Port 0 enable      |                  |                |
-| GPIO13  | 33      | P1 6     |               | P1 Left Button / Fire |                  |                |
-| GPIO19  | 35      | P1 9     |               | P1 Right Button       |                  |                |
-|         |         | P1 7     | COM (flyback) | P1 +5V                |                  |                |
-| GND     | 6,9,... | P1 8     |               | P1 GND                |                  |                |
+| RPI sig. | J1 pin | J2/J3 pins | Atari ST signals      | Amstrad CPC sig. | Atari 2600 sig. |
+|----------|--------|------------|-----------------------|------------------|-----------------|
+| GPIO2    | 3      | J2 9       | P0 Right Button       | COM2 (GND Joy 2) | Pot 1 (analog)  |
+| GPIO3    | 5      | J2 5       | P0 Port 0 enable      | Fire 3 (undoc)   | Pot 0 (analog)  |
+| GPIO4    | 7      | J2 3       | P0 YA / Left          | Left             | Left            |
+| GPIO17   | 11     | J2 1       | P0 XB / Up            | Up               | Up              |
+| GPIO27   | 13     | J2 2       | P0 XA / Down          | Down             | Down            |
+| GPIO22   | 15     | J2 4       | P0 YB / Right         | Right            | Right           |
+| GPIO10   | 19     | J2 6       | P0 Left Button / Fire | Fire 2 (default) | Fire            |
+| GPIO9    | 21     | J3 9       | P1 Right Button       |                  |                 |
+| GPIO11   | 23     | J3 5       | P1 Port 0 enable      |                  |                 |
+| GPIO0    | 27     | J3 3       | P1 YA / Left          |                  |                 |
+| GPIO5    | 29     | J3 1       | P1 XB / Up            |                  |                 |
+| GPIO6    | 31     | J3 2       | P1 XA / Down          |                  |                 |
+| GPIO13   | 33     | J3 4       | P1 YB / Right         |                  |               q  |
+| GPIO19   | 35     | J3 6       | P1 Left Button / Fire |                  |                 |
+
+### Software
+
+A Python program, running on a Raspberry Pi, processes the events from
+an input device and send the corresponding signals to the retro
+machine connected to the Raspberry Pi over GPIOs.
+
+- [`atari-mouse.py`](src/atari-mouse.py) emulates the Atari ST mouse.
+  Displays latency and sample rate statistics.
 
 ### Additional information
 
@@ -92,14 +102,26 @@ The first version will focus on the following use cases:
 
 <img src="pictures/retrodevem-schematic.png" alt="RetroDevEm schematic"/>
 
-### Software
+#### Power / Current considerations
 
-A Python program, running on a Raspberry Pi, processes the events from
-an input device and send the corresponding signals to the retro
-machine connected to the Raspberry Pi over GPIOs.
+It is not clear how much current can be drawn from the GPIO pins,
+though a few mA seem to be fine.  According to its specification, the
+ULN2003AN has a 2.7 KOhms resitor on each input pin.  With a 3.3V at
+its input, it would draw a maximum of 1.3. So connecting the GPIO pins
+directly to the ULN2003AN should be fine.
 
-- [`atari-mouse.py`](src/atari-mouse.py) emulates the Atari ST mouse.
-  Displays latency and sample rate statistics.
+The Atari connectors have 8K and 10 KOhms pull-up resistor at 5V,
+therefore 0.5 to 0.64 mA is flowing when these inputs are shorted to
+GND. We can assume similar values for the Atari 2600 and the CPC.  The
+ULN2003AN specification tells us that 75uA current flowing through an
+ULN2003AN input allows 300 mA (VS = 8V) to 360mA (Vs = 10V) at its
+output. So a 75 uA input current should be more than enough for 1 mA
+output current at VS = 5V.
+
+To reach 75 uA with a 3.3 V source, we need a total resistor of 44
+KOhms, minus the 2.7 KOhms of the ULN2003A, we need around 41 KOHms.
+The 47 KOhms E3 value is a good fit.  The resulting current will be 70
+uA.
 
 ## Current status
 
