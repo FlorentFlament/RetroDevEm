@@ -73,6 +73,9 @@ machine connected to the Raspberry Pi over GPIOs.
 
 ### Additional information
 
+- [Sourcing](sourcing.md)
+- [Mechanical details](mechanical.md)
+
 #### Consoles and computers DB9 wiring
 
 | DB9 pins | Atari ST  | Atari ST    | Atari ST    | Amstrad CPC      | Atari 2600     |
