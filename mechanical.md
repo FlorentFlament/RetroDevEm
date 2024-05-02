@@ -39,3 +39,7 @@ Ref: Amphenol T812110A101CEU
 
 Height with strain relief: 13.55 mm
 Height wthout strain relief: 10.58 mm
+
+# Drawing
+
+<img src="pictures/retrodevem-pen-mechanical-drawing.pdf"/>
