@@ -6,12 +6,12 @@ import os
 from gpiozero import LED
 
 # Update according to board design
-XA = LED(2)
-XB = LED(3)
+XA = LED(27)
+XB = LED(17)
 YA = LED(4)
-YB = LED(17)
-LB = LED(27) # Left mouse button
-RB = LED(22) # Right mouse button
+YB = LED(22)
+LB = LED(10) # Left mouse button
+RB = LED(2) # Right mouse button
 
 # USB mouse events location
 USB_DEVICE = "/dev/input/event0"
@@ -53,8 +53,8 @@ class StMouse:
         self.y_delta = 0
         self.tick_period = MAX_TICK_PERIOD
         self.worst_delay = 0
-        LB.on() # Button not pressed
-        RB.on()
+        LB.off() # Button not pressed
+        RB.off()
 
     def x_step(self, dir):
         """dir can be 1 for right or -1 for left"""
@@ -72,12 +72,12 @@ class StMouse:
         else: YA.off()
 
     def btn_left(self, val):
-        if val: LB.off()
-        else  : LB.on()
+        if val: LB.on()
+        else  : LB.off()
 
     def btn_right(self, val):
-        if val: RB.off()
-        else  : RB.on()
+        if val: RB.on()
+        else  : RB.off()
 
     def x_move(self, val):
         self.x_delta += val
