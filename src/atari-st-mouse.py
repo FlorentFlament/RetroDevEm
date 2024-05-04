@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 import time
-import struct
-import fcntl
-import os
 from gpiozero import LED
 import inputdevice as idev
 
@@ -125,12 +122,19 @@ class StMouse:
 
 def main():
     sm = StMouse()
-    dev = idev.InputDevice()
+    dev = idev.InputDevice(blocking=False)
 
     next_tick = time.monotonic() # time.monotonic is more accurate than time.time
     next_stat = next_tick
     while True:
-        sm.process_events(dev.get_events())
+        # Retrieve every event in the queue
+        event_l = []
+        event = dev.get_event() # Non blocking
+        while event:
+            event_l.append(event)
+            event = dev.get_event()
+        sm.process_events(event_l)
+
         sm.signals_tick()
         next_tick += sm.get_tick_period()
         # Display some statistics
