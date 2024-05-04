@@ -39,9 +39,19 @@ something better and make it free software ?
 
 A PCB (Printed Circuit Board), with:
 - 2x ULN2003AN ICs (7 Darlington transistors per IC)
-- 14 47 KOhms resistors (optional)
+- 14 15 KOhms resistors (optional)
 - 1x 40 pins socket (Raspberry Pi connector)
 - 2x 10 pins headers (Atari ports connectors)
+
+#### About the resistors
+
+Without resistors, the design works perfectly well.  The current drawn
+on the Raspberry PI GPIO pins is 706 uA, for a 440 uA current flowing
+out of the Atari ST mouse/joystick port.
+
+With 15 KOhms resistors, the design works perfectly as well.  The
+current on the Raspberry Pi GPIO pins in 113 uA, for a 440 uA current
+on the Atari ST port side.
 
 #### Board wiring
 
@@ -59,7 +69,7 @@ A PCB (Printed Circuit Board), with:
 | GPIO0    | 27     | J3 3       | P1 YA / Left          |                  |                 |
 | GPIO5    | 29     | J3 1       | P1 XB / Up            |                  |                 |
 | GPIO6    | 31     | J3 2       | P1 XA / Down          |                  |                 |
-| GPIO13   | 33     | J3 4       | P1 YB / Right         |                  |               q  |
+| GPIO13   | 33     | J3 4       | P1 YB / Right         |                  |                 |
 | GPIO19   | 35     | J3 6       | P1 Left Button / Fire |                  |                 |
 
 ### Software
@@ -104,27 +114,6 @@ The first version will focus on the following use cases:
 #### Schematics
 
 <img src="pictures/retrodevem-schematic.png" alt="RetroDevEm schematic"/>
-
-#### Power / Current considerations
-
-It is not clear how much current can be drawn from the GPIO pins,
-though a few mA seem to be fine.  According to its specification, the
-ULN2003AN has a 2.7 KOhms resitor on each input pin.  With a 3.3V at
-its input, it would draw a maximum of 1.3. So connecting the GPIO pins
-directly to the ULN2003AN should be fine.
-
-The Atari connectors have 8K and 10 KOhms pull-up resistor at 5V,
-therefore 0.5 to 0.64 mA is flowing when these inputs are shorted to
-GND. We can assume similar values for the Atari 2600 and the CPC.  The
-ULN2003AN specification tells us that 75uA current flowing through an
-ULN2003AN input allows 300 mA (VS = 8V) to 360mA (Vs = 10V) at its
-output. So a 75 uA input current should be more than enough for 1 mA
-output current at VS = 5V.
-
-To reach 75 uA with a 3.3 V source, we need a total resistor of 44
-KOhms, minus the 2.7 KOhms of the ULN2003A, we need around 41 KOHms.
-The 47 KOhms E3 value is a good fit.  The resulting current will be 70
-uA.
 
 ## Current status
 

@@ -7,16 +7,16 @@ are in Euros.
 
 - 2x 2x5  Pin Headers
 - 1x 2x20 PCB Receptacle / Socket
-- 14x 47 KOhms resitors
+- 14x 15 KOhms resitors
 - 2x ULN2003AN
 
 | Count | Reference                   | Description       | Unit Price(+) | Total Price |
 |-------|-----------------------------|-------------------|---------------|-------------|
 | 2     | Multicomp Pro 2213S-10G     | 2x5 Pin Header    | 0.085         | 0.17        |
 | 1     | Multicomp Pro 2214S-40SG-85 | 2x20 PCB Socket   | 1.45          | 1.45        |
-| 14    | Multicomp Pro MCRE000057    | 47 kohms resistor | 0.038         | 0.532       |
+| 14    | Multicomp Pro MP006750      | 15 KOhms resistor | 0.021         | 0.294       |
 | 2     | Texas Instruments ULN2003AN | Transistors Array | 0.392         | 0.784       |
-|       |                             | Total             |               | 2.936       |
+|       |                             | Total             |               | 2.698       |
 
 (+) On Farnell
 
