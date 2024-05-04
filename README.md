@@ -119,9 +119,10 @@ The first version will focus on the following use cases:
 
 ### Atari ST
 
-Mouse emulation is working nicely.  Latency is below 20 ms (i.e 1
-frame at 50 Hz) and CPU usage is below 10% of a core, for normal
-usage.
+- Mouse emulation is working.  Latency is below 20 ms (i.e 1 frame at
+  50 Hz) and CPU usage is below 10% of a core, for normal usage.
+- Joystick emulation is working.  No latency, CPU usage below 1% of a
+  core.
 
 ## Links
 
