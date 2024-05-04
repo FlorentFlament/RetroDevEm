@@ -4,6 +4,7 @@ import struct
 import fcntl
 import os
 from gpiozero import LED
+import inputdevice as idev
 
 # Update according to board design
 XA = LED(27)
@@ -12,9 +13,6 @@ YA = LED(4)
 YB = LED(22)
 LB = LED(10) # Left mouse button
 RB = LED(2) # Right mouse button
-
-# USB mouse events location
-USB_DEVICE = "/dev/input/event0"
 
 # Slow down mouse motion -> Divide mouse speed by MOUSE_SCALE
 MOUSE_SCALE = 2
@@ -29,21 +27,6 @@ STATS_PERIOD = 0.5 # seconds
 
 A_SIGNAL = (0, 1, 1, 0)
 B_SIGNAL = (0, 0, 1, 1)
-
-# Constants for the event structure
-# https://www.kernel.org/doc/html/latest/input/input.html
-# https://docs.python.org/3/library/struct.html
-EVENT_FORMAT = 'llHHi' # long, long, uint16_t, uint16_t, uint32_t
-EVENT_SIZE = struct.calcsize(EVENT_FORMAT)
-
-# Events types
-EV_KEY = 1
-EV_REL = 2
-# Events codes
-REL_X = 0
-REL_Y = 1
-BTN_LEFT = 272
-BTN_RIGHT = 273
 
 class StMouse:
     def __init__(self):
@@ -123,12 +106,12 @@ class StMouse:
 
     def process_events(self, events):
         for ev_sec, ev_us, ev_type, ev_code, ev_value in events:
-            if ev_type == EV_REL:
-                if   ev_code == REL_X: self.x_move(ev_value)
-                elif ev_code == REL_Y: self.y_move(ev_value)
-            elif ev_type == EV_KEY:
-                if   ev_code == BTN_LEFT : self.btn_left(ev_value)
-                elif ev_code == BTN_RIGHT: self.btn_right(ev_value)
+            if ev_type == idev.EV_REL:
+                if   ev_code == idev.REL_X: self.x_move(ev_value)
+                elif ev_code == idev.REL_Y: self.y_move(ev_value)
+            elif ev_type == idev.EV_KEY:
+                if   ev_code == idev.BTN_LEFT : self.btn_left(ev_value)
+                elif ev_code == idev.BTN_RIGHT: self.btn_right(ev_value)
             self.update_tick_period()
             self.update_worst_delay(ev_sec + ev_us*1e-6)
 
@@ -140,30 +123,14 @@ class StMouse:
         self.worst_delay = 0
         print(stats)
 
-class UsbMouse:
-    def __init__(self, device):
-        self.device = open(device, 'rb', buffering=0)
-        fd = self.device.fileno()
-        flag = fcntl.fcntl(fd, fcntl.F_GETFL)
-        fcntl.fcntl(fd, fcntl.F_SETFL, flag | os.O_NONBLOCK)
-
-    def get_events(self):
-        """Process every event in the USB device file"""
-        rv = []
-        event_data = self.device.read(EVENT_SIZE)
-        while event_data:
-            rv.append( struct.unpack(EVENT_FORMAT, event_data) )
-            event_data = self.device.read(EVENT_SIZE)
-        return rv
-
 def main():
     sm = StMouse()
-    um = UsbMouse(USB_DEVICE)
+    dev = idev.InputDevice()
 
     next_tick = time.monotonic() # time.monotonic is more accurate than time.time
     next_stat = next_tick
     while True:
-        sm.process_events(um.get_events())
+        sm.process_events(dev.get_events())
         sm.signals_tick()
         next_tick += sm.get_tick_period()
         # Display some statistics
