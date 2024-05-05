@@ -42,10 +42,10 @@ are in Euros.
 
 | Count | Reference                     | Description   | Unit Price(+) | Total Price |
 |-------|-------------------------------|---------------|---------------|-------------|
-| 80 cm | Multicomp Pro R2651HTSY10SC85 | Ribbon cable  | 1.14          | 0.092       |
+| 80 cm | Multicomp Pro R2651DTSY10SC85 | Ribbon cable  | 1.18          | 0.094       |
 | 2     | Amphenol L17DEFRB09S          | DB9 connector | 3.53          | 7.06        |
 | 2     | Amphenol T812110A101CEU       | IDC connector | 0.293         | 0.586       |
-|       |                               | Total         |               | 7.738       |
+|       |                               | Total         |               | 7.740       |
 
 ## Plexiglass
 
