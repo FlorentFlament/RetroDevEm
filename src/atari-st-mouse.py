@@ -5,9 +5,9 @@ import inputdevice as idev
 
 # Update according to board design
 XA = LED(27)
-XB = LED(17)
-YA = LED(4)
-YB = LED(22)
+XB = LED(22)
+YA = LED(17)
+YB = LED(4)
 LB = LED(10) # Left mouse button
 RB = LED(2) # Right mouse button
 

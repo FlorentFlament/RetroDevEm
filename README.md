@@ -59,17 +59,17 @@ on the Atari ST port side.
 |----------|--------|------------|-----------------------|------------------|-----------------|
 | GPIO2    | 3      | J2 9       | P0 Right Button       | COM2 (GND Joy 2) | Pot 1 (analog)  |
 | GPIO3    | 5      | J2 5       | P0 Port 0 enable      | Fire 3 (undoc)   | Pot 0 (analog)  |
-| GPIO4    | 7      | J2 3       | P0 YA / Left          | Left             | Left            |
-| GPIO17   | 11     | J2 1       | P0 XB / Up            | Up               | Up              |
+| GPIO4    | 7      | J2 4       | P0 YB / Right         | Right            | Right           |
+| GPIO17   | 11     | J2 3       | P0 YA / Left          | Left             | Left            |
 | GPIO27   | 13     | J2 2       | P0 XA / Down          | Down             | Down            |
-| GPIO22   | 15     | J2 4       | P0 YB / Right         | Right            | Right           |
+| GPIO22   | 15     | J2 1       | P0 XB / Up            | Up               | Up              |
 | GPIO10   | 19     | J2 6       | P0 Left Button / Fire | Fire 2 (default) | Fire            |
 | GPIO9    | 21     | J3 9       | P1 Right Button       |                  |                 |
 | GPIO11   | 23     | J3 5       | P1 Port 0 enable      |                  |                 |
-| GPIO0    | 27     | J3 3       | P1 YA / Left          |                  |                 |
-| GPIO5    | 29     | J3 1       | P1 XB / Up            |                  |                 |
+| GPIO0    | 27     | J3 4       | P1 YB / Right         |                  |                 |
+| GPIO5    | 29     | J3 3       | P1 YA / Left          |                  |                 |
 | GPIO6    | 31     | J3 2       | P1 XA / Down          |                  |                 |
-| GPIO13   | 33     | J3 4       | P1 YB / Right         |                  |                 |
+| GPIO13   | 33     | J3 1       | P1 XB / Up            |                  |                 |
 | GPIO19   | 35     | J3 6       | P1 Left Button / Fire |                  |                 |
 
 ### Software
