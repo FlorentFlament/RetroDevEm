@@ -124,6 +124,14 @@ The first version will focus on the following use cases:
 - Joystick emulation is working.  No latency, CPU usage below 1% of a
   core.
 
+## Todo
+
+- Order new board version;
+- Fix bogus signal sent to Atari when Raspberry Pi is off;
+- Implement auto-fire;
+- CLI options for scale and device selection;
+- Write blog article about the project.
+
 ## Links
 
 - [Incremental encoder on Wikipedia][4]: describes the mouse signal
