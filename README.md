@@ -127,10 +127,10 @@ The first version will focus on the following use cases:
 ## Todo
 
 - Order new board version;
-- Fix bogus signal sent to Atari when Raspberry Pi is off;
-- Implement auto-fire;
+- Configure RPI GPIO pins to pull-down input by default;
 - CLI options for scale and device selection;
 - Write blog article about the project.
+- Implement auto-fire;
 
 ## Links
 
