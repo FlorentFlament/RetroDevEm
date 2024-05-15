@@ -1,41 +1,62 @@
 #!/usr/bin/env python3
+import time
 from gpiozero import LED
 import inputdevice as idev
 
-# Update according to board design
-JOY0_DOWN  = LED(27)
-JOY0_UP    = LED(17)
-JOY0_LEFT  = LED(4)
-JOY0_RIGHT = LED(22)
-JOY0_FIRE  = LED(10)
+BOARDS_CONFIG = {
+    "v2.1": {
+        "port0": {
+            "down": 27,
+            "up": 22,
+            "left": 17,
+            "right": 4,
+            "fire": 10,
+        },
+        "port1": {
+            "down": 6,
+            "up": 13,
+            "left": 5,
+            "right": 0,
+            "fire": 19,
+        },
+    },
+}
 
-def dump_status():
-    for sig in (JOY0_DOWN, JOY0_UP, JOY0_LEFT, JOY0_RIGHT, JOY0_FIRE):
-        print(sig)
+def rpi_init(board_version, port_id):
+    pins = BOARDS_CONFIG[board_version][port_id]
+    return {k:LED(v) for k,v in pins.items()}
 
-def main():
-    dev = idev.InputDevice("/dev/input/event5")
+def main(device, board_version, port_id):
+    port = rpi_init(board_version, port_id)
     while True:
-        _, _, ev_type, ev_code, ev_value = dev.get_event()
-        if  ev_type == idev.EV_ABS:
-            if   ev_code == idev.ABS_HAT0X:
-                print(f"HAT0X move: {ev_value}")
-                if   ev_value == -1: JOY0_LEFT.on()
-                elif ev_value ==  1: JOY0_RIGHT.on()
-                else: # ev_value == 0 when releasing a button
-                    JOY0_LEFT.off()
-                    JOY0_RIGHT.off()
-            elif ev_code == idev.ABS_HAT0Y:
-                print(f"HAT0Y move: {ev_value}")
-                if   ev_value == -1: JOY0_UP.on()
-                elif ev_value ==  1: JOY0_DOWN.on()
-                else: # ev_value == 0 when releasing a button
-                    JOY0_DOWN.off()
-                    JOY0_UP.off()
-        elif ev_type == idev.EV_KEY and ev_code == idev.BTN_SOUTH:
-                print(f"FIRE button: {ev_value}")
-                if ev_value == 1: JOY0_FIRE.on()
-                else: JOY0_FIRE.off()
+        try:
+            dev = idev.InputDevice(device)
+            print(f"Opened device: {device}")
+            while True:
+                _, _, ev_type, ev_code, ev_value = dev.get_event()
+                if  ev_type == idev.EV_ABS:
+                    if   ev_code == idev.ABS_HAT0X:
+                        print(f"HAT0X move: {ev_value}")
+                        if   ev_value == -1: port["left"].on()
+                        elif ev_value ==  1: port["right"].on()
+                        else: # ev_value == 0 when releasing a button
+                            port["left"].off()
+                            port["right"].off()
+                    elif ev_code == idev.ABS_HAT0Y:
+                        print(f"HAT0Y move: {ev_value}")
+                        if   ev_value == -1: port["up"].on()
+                        elif ev_value ==  1: port["down"].on()
+                        else: # ev_value == 0 when releasing a button
+                            port["down"].off()
+                            port["up"].off()
+                elif ev_type == idev.EV_KEY and ev_code == idev.BTN_SOUTH:
+                        print(f"FIRE button: {ev_value}")
+                        if ev_value == 1: port["fire"].on()
+                        else: port["fire"].off()
+        except OSError as e:
+            # Sometimes gamepads gets disconnected with crap cables
+            print(f"Error getting event: {e}")
+            time.sleep(0.2)
 
 if __name__ == "__main__":
-    main()
+    main("/dev/input/event6", "v2.1", "port1")
