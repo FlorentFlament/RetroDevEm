@@ -3,13 +3,24 @@ import time
 from gpiozero import LED
 import inputdevice as idev
 
-# Update according to board design
-XA = LED(27)
-XB = LED(22)
-YA = LED(17)
-YB = LED(4)
-LB = LED(10) # Left mouse button
-RB = LED(2) # Right mouse button
+BOARDS_CONFIG = {
+    "v2.0": {
+        "XA" : 4,
+        "XB" : 17,
+        "YA" : 3,
+        "YB" : 22,
+        "LB" : 27, # Left mouse button
+        "RB" : 10, # Right mouse button
+    },
+    "v2.1": {
+	"XA" : 27,
+	"XB" : 22,
+	"YA" : 17,
+	"YB" : 4,
+	"LB" : 10,
+	"RB" : 2,
+    },
+}
 
 # Slow down mouse motion -> Divide mouse speed by MOUSE_SCALE
 MOUSE_SCALE = 2
@@ -25,39 +36,45 @@ STATS_PERIOD = 0.5 # seconds
 A_SIGNAL = (0, 1, 1, 0)
 B_SIGNAL = (0, 0, 1, 1)
 
+def rpi_init(board_version):
+    pins = BOARDS_CONFIG[board_version]
+    return {k:LED(v) for k,v in pins.items()}
+
 class StMouse:
-    def __init__(self):
+    def __init__(self, board_version="v2.1"):
         self.x_state = 0
         self.y_state = 0
         self.x_delta = 0
         self.y_delta = 0
         self.tick_period = MAX_TICK_PERIOD
         self.worst_delay = 0
-        LB.off() # Button not pressed
-        RB.off()
+        # Initialize and turn off every line
+        self.signals = rpi_init(board_version)
+        for sig in self.signals.values():
+            sig.off()
 
     def x_step(self, dir):
         """dir can be 1 for right or -1 for left"""
         self.x_state = (self.x_state + dir) % 4
-        if A_SIGNAL[self.x_state]: XA.on()
-        else: XA.off()
-        if B_SIGNAL[self.x_state]: XB.on()
-        else: XB.off()
+        if A_SIGNAL[self.x_state]: self.signals["XA"].on()
+        else: self.signals["XA"].off()
+        if B_SIGNAL[self.x_state]: self.signals["XB"].on()
+        else: self.signals["XB"].off()
 
     def y_step(self, dir):
         self.y_state = (self.y_state + dir) % 4
-        if A_SIGNAL[self.y_state]: YB.on()
-        else: YB.off()
-        if B_SIGNAL[self.y_state]: YA.on()
-        else: YA.off()
+        if A_SIGNAL[self.y_state]: self.signals["YB"].on()
+        else: self.signals["YB"].off()
+        if B_SIGNAL[self.y_state]: self.signals["YA"].on()
+        else: self.signals["YA"].off()
 
     def btn_left(self, val):
-        if val: LB.on()
-        else  : LB.off()
+        if val: self.signals["LB"].on()
+        else  : self.signals["LB"].off()
 
     def btn_right(self, val):
-        if val: RB.on()
-        else  : RB.off()
+        if val: self.signals["RB"].on()
+        else  : self.signals["RB"].off()
 
     def x_move(self, val):
         self.x_delta += val
@@ -121,8 +138,8 @@ class StMouse:
         print(stats)
 
 def main():
-    sm = StMouse()
-    dev = idev.InputDevice(blocking=False)
+    sm = StMouse(board_version="v2.0")
+    dev = idev.InputDevice(device="/dev/input/event0", blocking=False)
 
     next_tick = time.monotonic() # time.monotonic is more accurate than time.time
     next_stat = next_tick
