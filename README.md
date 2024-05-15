@@ -72,6 +72,24 @@ on the Atari ST port side.
 | GPIO13   | 33     | J3 1       | P1 XB / Up            |                  |                 |
 | GPIO19   | 35     | J3 6       | P1 Left Button / Fire |                  |                 |
 
+#### Generating the gerber files
+
+- Run the DRC (Design Rule Checker)
+- File -> Fabrication outputs -> Gerbers
+- Select the output directory
+- Include every layer except Margin, F.Courtyard and B.Courtyard
+- Keep only the following "General Options" checked:
+  - Plot the reference designators
+  - Check zone fills before plotting
+- Keep the default "Gerber Options"
+- Click "Plot" button
+- Then click on "Generate Drill Files..."
+- In the "Drill File Format" section, select "Gerber X2"
+- Then click "Generate Drill File"
+- Create a zip archive from the gerber folder.
+
+The generated archive can be checked in Kicad's Gerber viewer.
+
 ### Software
 
 A Python program, running on a Raspberry Pi, processes the events from
