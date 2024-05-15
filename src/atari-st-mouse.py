@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import time
+import click
 from gpiozero import LED
 import inputdevice as idev
 
@@ -22,9 +23,6 @@ BOARDS_CONFIG = {
     },
 }
 
-# Slow down mouse motion -> Divide mouse speed by MOUSE_SCALE
-MOUSE_SCALE = 2
-
 # Mouse is polled at 62.5 Hz (obtained using evtest)
 # Atari ST screen vertical freq in 50 Hz
 REFRESH_PERIOD = 1 / 80
@@ -41,11 +39,12 @@ def rpi_init(board_version):
     return {k:LED(v) for k,v in pins.items()}
 
 class StMouse:
-    def __init__(self, board_version="v2.1"):
+    def __init__(self, board_version, xy_scale):
         self.x_state = 0
         self.y_state = 0
         self.x_delta = 0
         self.y_delta = 0
+        self.xy_scale = xy_scale
         self.tick_period = MAX_TICK_PERIOD
         self.worst_delay = 0
         # Initialize and turn off every line
@@ -83,21 +82,21 @@ class StMouse:
         self.y_delta += val
 
     def update_tick_period(self):
-        delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / MOUSE_SCALE
+        delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / self.xy_scale
         if delta_steps >= 1:
             self.tick_period = min( self.tick_period, REFRESH_PERIOD / delta_steps ) # Only faster
             self.tick_period = max( self.tick_period, MIN_TICK_PERIOD )
             self.tick_period = min( self.tick_period, MAX_TICK_PERIOD )
 
     def update_worst_delay(self, ev_time):
-        delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / MOUSE_SCALE
+        delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / self.xy_scale
         if delta_steps >= 1: # We can't tell if we don't have any step in queue
             evt_delay = time.time() - ev_time
             sig_delay = evt_delay + delta_steps * self.tick_period
             self.worst_delay = max(self.worst_delay, sig_delay)
 
     def decay_tick_period(self):
-        delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / MOUSE_SCALE
+        delta_steps = max(abs(self.x_delta), abs(self.y_delta)) / self.xy_scale
         if delta_steps < 1:
             self.tick_period = self.tick_period * TICK_PERIOD_DECAY
             self.tick_period = min(self.tick_period, MAX_TICK_PERIOD)
@@ -107,15 +106,15 @@ class StMouse:
 
     def signals_tick(self):
         # Move mouse pointer
-        if abs(self.x_delta) >= MOUSE_SCALE:
-            # increment by (+/-) MOUSE_SCALE
-            inc = MOUSE_SCALE * self.x_delta // abs(self.x_delta)
+        if abs(self.x_delta) >= self.xy_scale:
+            # increment by (+/-) self.xy_scale
+            inc = self.xy_scale * self.x_delta // abs(self.x_delta)
             self.x_delta -= inc # Works for positive and negative alike
-            self.x_step(inc // MOUSE_SCALE) # Step is by +/- 1
-        if abs(self.y_delta) >= MOUSE_SCALE:
-            inc = MOUSE_SCALE * self.y_delta // abs(self.y_delta)
+            self.x_step(inc // self.xy_scale) # Step is by +/- 1
+        if abs(self.y_delta) >= self.xy_scale:
+            inc = self.xy_scale * self.y_delta // abs(self.y_delta)
             self.y_delta -= inc
-            self.y_step(inc // MOUSE_SCALE)
+            self.y_step(inc // self.xy_scale)
         self.decay_tick_period()
 
     def process_events(self, events):
@@ -137,9 +136,13 @@ class StMouse:
         self.worst_delay = 0
         print(stats)
 
-def main():
-    sm = StMouse(board_version="v2.0")
-    dev = idev.InputDevice(device="/dev/input/event0", blocking=False)
+@click.command()
+@click.option("--board", default="v2.1", help="Board revision.")
+@click.option("--device", default="/dev/input/event0", help="Input device to use.")
+@click.option("--xy-scale", default=2, help="Scale for XY mouse movements (more = slower mouse).")
+def main(board, device, xy_scale):
+    sm = StMouse(board_version=board, xy_scale=xy_scale)
+    dev = idev.InputDevice(device=device, blocking=False)
 
     next_tick = time.monotonic() # time.monotonic is more accurate than time.time
     next_stat = next_tick
