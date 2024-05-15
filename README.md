@@ -92,12 +92,13 @@ The generated archive can be checked in Kicad's Gerber viewer.
 
 ### Software
 
-A Python program, running on a Raspberry Pi, processes the events from
-an input device and send the corresponding signals to the retro
-machine connected to the Raspberry Pi over GPIOs.
+Python programs, running on a Raspberry Pi, process events from an
+input devices and send corresponding signals to the retro machine
+connected to the board.
 
-- [`atari-mouse.py`](src/atari-mouse.py) emulates the Atari ST mouse.
-  Displays latency and sample rate statistics.
+#### Usage
+
+TODO
 
 ### Additional information
 
