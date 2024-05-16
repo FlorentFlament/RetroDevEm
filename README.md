@@ -93,13 +93,87 @@ The generated archive can be checked in Kicad's Gerber viewer.
 
 ### Software
 
-Python programs, running on a Raspberry Pi, process events from an
-input devices and send corresponding signals to the retro machine
-connected to the board.
+Python programs, running on a Raspberry Pi, process events from input
+devices (mouse, gamepad) and send corresponding signals to the retro
+machine connected to the board.
+
+#### Installation
 
 #### Usage
 
-TODO
+The RetroDevEm programs need to be installed on the Raspberry Pi
+connected to the Atari ST through the daughter board.
+
+Identify the input device files using `evtest`:
+
+```
+$ evtest
+No device specified, trying to scan all of /dev/input/event*
+Not running as root, no devices may be available.
+Available devices:
+/dev/input/event0:      vc4-hdmi-0
+/dev/input/event1:      vc4-hdmi-0 HDMI Jack
+/dev/input/event2:      vc4-hdmi-1
+/dev/input/event3:      vc4-hdmi-1 HDMI Jack
+/dev/input/event4:      Sony Interactive Entertainment Wireless Controller
+/dev/input/event5:      Sony Interactive Entertainment Wireless Controller Motion Sensors
+/dev/input/event6:      Sony Interactive Entertainment Wireless Controller Touchpad
+/dev/input/event7:      Logitech USB Optical Mouse
+Select the device event number [0-7]: ^C
+```
+
+Run the `atari-st-mouse` program to emulate a mouse on the Atari ST:
+
+```
+$ ./atari-st-mouse.py --device /dev/input/event7 &
+[1] 1947
+```
+
+Run the `atari-st-joystick` program to emulate a joystick on the Atari ST:
+
+```
+$ ./atari-st-joystick.py --device /dev/input/event4 &
+[2] 1951
+```
+
+Available options for the `atari-st-mouse` program:
+
+```
+$ ./atari-st-mouse.py --help
+Usage: atari-st-mouse.py [OPTIONS]
+
+  Send mouse events to an Atari ST connected to the RetroDevEm board.  Usage
+  example: atari-st-mouse --board v2.0 --device /dev/input/event0 --port 0
+  --speed 4
+
+Options:
+  --board TEXT          Board revision.  [default: v2.0]
+  --device TEXT         Input device to use.  [default: /dev/input/event0]
+  --port INTEGER        Board/Atari port to connect the mouse to.  [default:
+                        0]
+  --speed INTEGER       Mouse speed divider (more = slower).  [default: 2]
+  --debug / --no-debug  Display debugging information.  [default: no-debug]
+  --help                Show this message and exit.
+```
+
+Available options for the `atari-st-joystick` program:
+
+```
+$ ./atari-st-joystick.py --help
+Usage: atari-st-joystick.py [OPTIONS]
+
+  Send joystick/gamepad events to an Atari ST connected to the RetroDevEm
+  board.  Usage example: atari-st-joystick --board v2.0 --device
+  /dev/input/event0 --port 0
+
+Options:
+  --board TEXT          Board revision.  [default: v2.0]
+  --device TEXT         Input device to use.  [default: /dev/input/event0]
+  --port INTEGER        Board/Atari ST port to connect the joystick to.
+                        [default: 1]
+  --debug / --no-debug  Display debugging information.  [default: no-debug]
+  --help                Show this message and exit.
+```
 
 ### Additional information
 
