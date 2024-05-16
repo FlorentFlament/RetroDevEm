@@ -6,20 +6,32 @@ import inputdevice as idev
 
 BOARDS_CONFIG = {
     "v2.0": {
-        "XA" : 4,
-        "XB" : 17,
-        "YA" : 3,
-        "YB" : 22,
-        "LB" : 27, # Left mouse button
-        "RB" : 10, # Right mouse button
+        0: { # Port 0 (i.e connector J2)
+            "XA" : 4,
+            "XB" : 17,
+            "YA" : 3,
+            "YB" : 22,
+            "LB" : 27, # Left mouse button
+            "RB" : 10, # Right mouse button
+        },
+        1: { # Port 1 (i.e connector J3)
+            "XA" : 0,
+            "XB" : 5,
+            "YA" : 11,
+            "YB" : 13,
+            "LB" : 6,
+            "RB" : 19,
+        },
     },
     "v2.1": {
-	"XA" : 27,
-	"XB" : 22,
-	"YA" : 17,
-	"YB" : 4,
-	"LB" : 10,
-	"RB" : 2,
+        0: {
+            "XA" : 27,
+            "XB" : 22,
+            "YA" : 17,
+            "YB" : 4,
+            "LB" : 10,
+            "RB" : 2,
+        },
     },
 }
 
@@ -34,12 +46,12 @@ STATS_PERIOD = 0.5 # seconds
 A_SIGNAL = (0, 1, 1, 0)
 B_SIGNAL = (0, 0, 1, 1)
 
-def rpi_init(board_version):
-    pins = BOARDS_CONFIG[board_version]
+def rpi_init(board_version, port_id):
+    pins = BOARDS_CONFIG[board_version][port_id]
     return {k:LED(v) for k,v in pins.items()}
 
 class StMouse:
-    def __init__(self, board_version, xy_scale):
+    def __init__(self, board_version, port, xy_scale):
         self.x_state = 0
         self.y_state = 0
         self.x_delta = 0
@@ -48,7 +60,7 @@ class StMouse:
         self.tick_period = MAX_TICK_PERIOD
         self.worst_delay = 0
         # Initialize and turn off every line
-        self.signals = rpi_init(board_version)
+        self.signals = rpi_init(board_version, port)
         for sig in self.signals.values():
             sig.off()
 
@@ -139,9 +151,10 @@ class StMouse:
 @click.command()
 @click.option("--board", default="v2.1", help="Board revision.")
 @click.option("--device", default="/dev/input/event0", help="Input device to use.")
+@click.option("--port", default=0, help="Board/Atari ST port to connect the joystick to.")
 @click.option("--xy-scale", default=2, help="Scale for XY mouse movements (more = slower mouse).")
-def main(board, device, xy_scale):
-    sm = StMouse(board_version=board, xy_scale=xy_scale)
+def main(board, device, port, xy_scale):
+    sm = StMouse(board_version=board, port=port, xy_scale=xy_scale)
     dev = idev.InputDevice(device=device, blocking=False)
 
     next_tick = time.monotonic() # time.monotonic is more accurate than time.time
