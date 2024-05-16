@@ -90,3 +90,6 @@ def main(device, board, port, debug):
             # Sometimes gamepads gets disconnected with crap cables
             logger.warning(f"Error getting event: {e}")
             time.sleep(0.2)
+
+if __name__ == "__main__":
+    main()

@@ -198,3 +198,6 @@ def main(board, device, port, speed, debug):
             time.sleep( next_tick - time.monotonic() )
         except ValueError:
             pass
+
+if __name__ == "__main__":
+    main()
