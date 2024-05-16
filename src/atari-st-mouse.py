@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 import time
+import logging
 import click
 from gpiozero import LED
 import inputdevice as idev
+
+logger = logging.getLogger(__name__)
 
 BOARDS_CONFIG = {
     "v2.0": {
@@ -52,11 +55,11 @@ def rpi_init(board_version, port_id):
 
 class StMouse:
     def __init__(self, board_version, port, xy_scale):
+        self.xy_scale = xy_scale
         self.x_state = 0
         self.y_state = 0
         self.x_delta = 0
         self.y_delta = 0
-        self.xy_scale = xy_scale
         self.tick_period = MAX_TICK_PERIOD
         self.worst_delay = 0
         # Initialize and turn off every line
@@ -146,15 +149,19 @@ class StMouse:
         stats = f"Tick: {tick_us} us"
         if delay_ms: stats += f" - Delay: {delay_ms} ms"
         self.worst_delay = 0
-        print(stats)
+        logger.info(stats)
 
 @click.command()
 @click.option("--board", default="v2.1", help="Board revision.")
 @click.option("--device", default="/dev/input/event0", help="Input device to use.")
-@click.option("--port", default=0, help="Board/Atari ST port to connect the joystick to.")
-@click.option("--xy-scale", default=2, help="Scale for XY mouse movements (more = slower mouse).")
-def main(board, device, port, xy_scale):
-    sm = StMouse(board_version=board, port=port, xy_scale=xy_scale)
+@click.option("--port", default=0, help="Board/Atari port to connect the mouse to.")
+@click.option("--speed", default=2, help="Mouse speed divider (more = slower).")
+@click.option("--debug/--no-debug", help="Display debugging information.")
+def main(board, device, port, speed, debug):
+    if debug:
+        logging.basicConfig(level=logging.DEBUG)
+
+    sm = StMouse(board_version=board, port=port, xy_scale=speed)
     dev = idev.InputDevice(device=device, blocking=False)
 
     next_tick = time.monotonic() # time.monotonic is more accurate than time.time
