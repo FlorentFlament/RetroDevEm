@@ -8,20 +8,36 @@ import inputdevice as idev
 logger = logging.getLogger(__name__)
 
 BOARDS_CONFIG = {
-    "v2.1": {
-        0: { # Port ID
-            "down": 27,
-            "up": 22,
-            "left": 17,
-            "right": 4,
-            "fire": 10,
+    "v2.0": {
+        0: { # Port 0 (i.e connector J2)
+            "down" : 4,
+            "up"   : 17,
+            "left" : 3,
+            "right": 22,
+            "fire" : 27,
         },
         1: {
-            "down": 6,
-            "up": 13,
-            "left": 5,
+            "down" : 0,
+            "up"   : 5,
+            "left" : 11,
+            "right": 13,
+            "fire" : 6,
+        },
+    },
+    "v2.1": {
+        0: { # Port 1 (i.e connector J3)
+            "down" : 27,
+            "up"   : 22,
+            "left" : 17,
+            "right": 4,
+            "fire" : 10,
+        },
+        1: {
+            "down" : 6,
+            "up"   : 13,
+            "left" : 5,
             "right": 0,
-            "fire": 19,
+            "fire" : 19,
         },
     },
 }
