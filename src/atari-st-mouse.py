@@ -35,6 +35,14 @@ BOARDS_CONFIG = {
             "LB" : 10,
             "RB" : 2,
         },
+        1: {
+            "XA" : 6,
+            "XB" : 13,
+            "YA" : 5,
+            "YB" : 0,
+            "LB" : 19,
+            "RB" : 9,
+        },
     },
 }
 
@@ -152,12 +160,17 @@ class StMouse:
         logger.info(stats)
 
 @click.command()
-@click.option("--board", default="v2.1", help="Board revision.")
-@click.option("--device", default="/dev/input/event0", help="Input device to use.")
-@click.option("--port", default=0, help="Board/Atari port to connect the mouse to.")
-@click.option("--speed", default=2, help="Mouse speed divider (more = slower).")
-@click.option("--debug/--no-debug", help="Display debugging information.")
+@click.option("--board", default="v2.0", help="Board revision.", show_default=True)
+@click.option("--device", default="/dev/input/event0", help="Input device to use.", show_default=True)
+@click.option("--port", default=0, help="Board/Atari port to connect the mouse to.", show_default=True)
+@click.option("--speed", default=2, help="Mouse speed divider (more = slower).", show_default=True)
+@click.option("--debug/--no-debug", help="Display debugging information.", show_default=True)
 def main(board, device, port, speed, debug):
+    """Send mouse events to an Atari ST connected to the RetroDevEm
+    board.  Usage example: atari-st-mouse --board v2.0 --device
+    /dev/input/event0 --port 0 --speed 4
+
+    """
     if debug:
         logging.basicConfig(level=logging.DEBUG)
 
