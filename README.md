@@ -74,6 +74,7 @@ on the Atari ST port side.
 
 #### Generating the gerber files
 
+In Kicad PCB editor:
 - Run the DRC (Design Rule Checker)
 - File -> Fabrication outputs -> Gerbers
 - Select the output directory
