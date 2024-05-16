@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
 import time
 import logging
 import click
 from gpiozero import LED
-import inputdevice as idev
+
+from . import inputdevice as idev
 
 logger = logging.getLogger(__name__)
 
@@ -198,6 +198,3 @@ def main(board, device, port, speed, debug):
             time.sleep( next_tick - time.monotonic() )
         except ValueError:
             pass
-
-if __name__ == "__main__":
-    main()

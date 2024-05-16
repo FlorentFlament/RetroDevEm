@@ -223,6 +223,7 @@ The first version will focus on the following use cases:
 - Configure RPI GPIO pins to pull-down input by default;
 - Write blog article about the project.
 - Implement auto-fire;
+- Use [python-evdev][5] instead of custom `inputdevice` module.
 
 ## Links
 
@@ -232,7 +233,8 @@ The first version will focus on the following use cases:
 - [Yaumataca][2]: inspiration for the "quadrature encoder" ;
 - [Atari-Quadrature-USB-Mouse-Adapter][3]
 
-[1]: https://github.com/backofficeshow/ATARIPiMouse
-[2]: https://github.com/Slamy/Yaumataca
-[3]: https://github.com/jjmz/Atari-Quadrature-USB-Mouse-Adapter
-[4]: https://en.wikipedia.org/wiki/Incremental_encoder
+[1]:https://github.com/backofficeshow/ATARIPiMouse
+[2]:https://github.com/Slamy/Yaumataca
+[3]:https://github.com/jjmz/Atari-Quadrature-USB-Mouse-Adapter
+[4]:https://en.wikipedia.org/wiki/Incremental_encoder
+[5]:https://python-evdev.readthedocs.io/en/latest/usage.html

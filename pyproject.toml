@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "retrodevem"
+version = "0.1"
+authors = [
+  { name="Florent Flament", email="contact@florentflament.com" },
+]
+
+description = "RetroDevEm (Retro Device Emulator) is a free (as in Free Software) input devices (mouse and joystick) emulator for retro consoles and computers (Atari 2600, Atari ST, Amstrad CPC, ...)."
+
+readme = "README.md"
+requires-python = ">=3"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: POSIX :: Linux",
+]
+
+dependencies = ["gpiozero", "click"]
+keywords = ["mouse", "joystick", "gamepad", "USB", "Atari 2600", "Atari 2600", "Atari ST", "Amstrad CPC", "retrogaming", "retrocomputing"]
+
+[project.urls]
+Homepage = "https://github.com/FlorentFlament/RetroDevEm"
+Issues = "https://github.com/FlorentFlament/RetroDevEm/issues"
+
+[project.scripts]
+atarist-joystick = "retrodevem:atarist_joystick.main"
+atarist-mouse = "retrodevem:atarist_mouse.main"

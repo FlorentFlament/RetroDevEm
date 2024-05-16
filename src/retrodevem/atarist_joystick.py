@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
 import time
 import logging
 import click
 from gpiozero import LED
-import inputdevice as idev
+
+from . import inputdevice as idev
 
 logger = logging.getLogger(__name__)
 
@@ -90,6 +90,3 @@ def main(device, board, port, debug):
             # Sometimes gamepads gets disconnected with crap cables
             logger.warning(f"Error getting event: {e}")
             time.sleep(0.2)
-
-if __name__ == "__main__":
-    main()

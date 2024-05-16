@@ -2,3 +2,4 @@ rde-board/fp-info-cache
 rde-board/rde-board-backups/
 rde-board/rde-board-gerber/
 artifacts/
+dist/
