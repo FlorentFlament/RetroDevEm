@@ -47,11 +47,16 @@ def rpi_init(board_version, port_id):
     return {k:LED(v) for k,v in pins.items()}
 
 @click.command()
-@click.option("--board", default="v2.1", help="Board revision.")
-@click.option("--device", default="/dev/input/event0", help="Input device to use.")
-@click.option("--port",  default=1, help="Board/Atari ST port to connect the joystick to.")
-@click.option("--debug/--no-debug", help="Display debugging information.")
+@click.option("--board", default="v2.0", help="Board revision.", show_default=True)
+@click.option("--device", default="/dev/input/event0", help="Input device to use.", show_default=True)
+@click.option("--port",  default=1, help="Board/Atari ST port to connect the joystick to.", show_default=True)
+@click.option("--debug/--no-debug", help="Display debugging information.", show_default=True)
 def main(device, board, port, debug):
+    """Send joystick/gamepad events to an Atari ST connected to the
+    RetroDevEm board.  Usage example: atari-st-joystick --board v2.0
+    --device /dev/input/event0 --port 0
+
+    """
     if debug:
         logging.basicConfig(level=logging.DEBUG)
 
