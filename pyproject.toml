@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "retrodevem"
-version = "0.1"
+version = "0.2"
 authors = [
   { name="Florent Flament", email="contact@florentflament.com" },
 ]
@@ -19,7 +19,7 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
 ]
 
-dependencies = ["gpiozero", "click"]
+dependencies = ["lgpio", "gpiozero", "click"]
 keywords = ["mouse", "joystick", "gamepad", "USB", "Atari 2600", "Atari 2600", "Atari ST", "Amstrad CPC", "retrogaming", "retrocomputing"]
 
 [project.urls]
