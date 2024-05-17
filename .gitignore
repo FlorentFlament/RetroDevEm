@@ -1,5 +1,5 @@
-rde-board/fp-info-cache
-rde-board/rde-board-backups/
-rde-board/rde-board-gerber/
+board/rde-board-v2.1/fp-info-cache
+board/rde-board-v2.1/rde-board-backups/
+board/rde-board-v2.1/rde-board-gerber/
 artifacts/
 dist/
