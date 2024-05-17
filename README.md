@@ -213,18 +213,33 @@ Options:
 
 #### Consoles and computers DB9 wiring
 
-| DB9 pins | Atari ST  | Atari ST    | Atari ST    | Amstrad CPC      | Atari 2600     |
-|          | Mouse P0  | Joystick P0 | Joystick P1 | Joystick         |                |
-|----------|-----------|-------------|-------------|------------------|----------------|
-| 1        | XB        | Up          | Up          | Up               | Up             |
-| 2        | XA        | Down        | Down        | Down             | Down           |
-| 3        | YA        | Left        | Left        | Left             | Left           |
-| 4        | YB        | Right       | Right       | Right            | Right          |
-| 5        |           |             | P0 enable   | Fire 3 (undoc)   | Pot 0 (analog) |
-| 6        | Left But  | Fire        | Fire        | Fire 2 (default) | Fire           |
-| 7        | +5V       | +5V         | +5V         | Fire 1 (extra)   | +5V            |
-| 8        | GND       | GND         | GND         | COM1 (joy1)      | GND            |
-| 9        | Right But |             |             | COM2 (joy2)      | Pot 1 (analog  |
+##### Atari ST
+
+| DB9 pins | Mouse P0            | Joystick P0            | Joystick P1 |
+|----------|---------------------|------------------------|-------------|
+| 1        | XB                  | Up                     | Up          |
+| 2        | XA                  | Down                   | Down        |
+| 3        | YA                  | Left                   | Left        |
+| 4        | YB                  | Right                  | Right       |
+| 5        |                     |                        | P0 enable   |
+| 6        | Left But            | Fire                   | Fire        |
+| 7        | +5V                 | +5V                    | +5V         |
+| 8        | GND                 | GND                    | GND         |
+| 9        | Right But           |                        |             |
+
+##### Amstrad CPC & Atari 2600 Joystick
+
+| DB9 pins | Amstrad CPC      | Atari 2600     |
+|----------|------------------|----------------|
+| 1        | Up               | Up             |
+| 2        | Down             | Down           |
+| 3        | Left             | Left           |
+| 4        | Right            | Right          |
+| 5        | Fire 3 (undoc)   | Pot 0 (analog) |
+| 6        | Fire 2 (default) | Fire           |
+| 7        | Fire 1 (extra)   | +5V            |
+| 8        | COM1 (joy1)      | GND            |
+| 9        | COM2 (joy2)      | Pot 1 (analog  |
 
 Sources:
 - [cpcwiki](https://www.cpcwiki.eu/index.php/Connector:Digital_joystick)
