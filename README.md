@@ -93,16 +93,47 @@ The generated archive can be checked in Kicad's Gerber viewer.
 
 ### Software
 
-Python programs, running on a Raspberry Pi, process events from input
-devices (mouse, gamepad) and send corresponding signals to the retro
-machine connected to the board.
+The RetroDevEm programs need to be installed on a Raspberry Pi
+connected to the Atari ST through the RetroDevEm board (an RPI
+daughter board).  The programs process events from input devices
+(mouse, gamepad) and send corresponding signals to the retro machine
+connected to the board.
 
 #### Installation
 
-#### Usage
+You need to create a virtualenv on your Raspberry Pi and activate it:
 
-The RetroDevEm programs need to be installed on the Raspberry Pi
-connected to the Atari ST through the daughter board.
+```
+$ virtualenv venv/retrodevem
+created virtual environment CPython3.11.2.final.0-64 in 353ms
+  creator CPython3Posix(dest=/home/florent/venv/retrodevem, clear=False, no_vcs_ignore=False, global=False)
+  seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/home/florent/.local/share/virtualenv)
+    added seed packages: pip==23.0.1, setuptools==66.1.1, wheel==0.38.4
+  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
+$ source venv/retrodevem/bin/activate
+```
+
+Then RetroDevEm can be install with pip:
+
+```
+$ pip install retrodevem
+Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+Collecting retrodevem
+  Using cached retrodevem-0.2-py3-none-any.whl (22 kB)
+Collecting click
+  Using cached https://www.piwheels.org/simple/click/click-8.1.7-py3-none-any.whl (97 kB)
+Collecting gpiozero
+  Using cached https://www.piwheels.org/simple/gpiozero/gpiozero-2.0.1-py3-none-any.whl (150 kB)
+Collecting lgpio
+  Using cached lgpio-0.2.2.0-cp311-cp311-manylinux_2_34_aarch64.whl (364 kB)
+Collecting colorzero
+  Using cached https://www.piwheels.org/simple/colorzero/colorzero-2.0-py2.py3-none-any.whl (26 kB)
+Requirement already satisfied: setuptools in ./venv/retrodevem/lib/python3.11/site-packages (from colorzero->gpiozero->retrodevem) (66.1.1)
+Installing collected packages: lgpio, colorzero, click, gpiozero, retrodevem
+Successfully installed click-8.1.7 colorzero-2.0 gpiozero-2.0.1 lgpio-0.2.2.0 retrodevem-0.2
+```
+
+#### Usage
 
 Identify the input device files using `evtest`:
 
