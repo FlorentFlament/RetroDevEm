@@ -1,5 +1,7 @@
 # RetroDevEm
 
+<img src="pictures/retrodevem-v2.0-in-action-lowres.jpg" alt="RetroDevEm in action"/>
+
 RetroDevEm (Retro Device Emulator) is a free (as in Free Software)
 input devices (mouse and joystick) emulator for retro consoles and
 computers (Atari 2600, Atari ST, Amstrad CPC, ...).  It allows using
@@ -11,12 +13,8 @@ The project consists of 2 components:
 - Hardware: A daughter printed circuit board, to be plugged on a Raspberry Pi;
 - Software: Programs running on the Raspberry Pi.
 
-<img src="pictures/rde-board-v2.0-fixed.jpg" alt="RetroDevEm Board v2.0 fixed"/>
-
 The daughter board can be connected to the retro machines via DB-9
-terminated ribbon cables.
-
-DB-9 <- ribbon cable -> 2x5 pins IDC connector
+flat cables.
 
 ## Project focus
 
@@ -36,6 +34,8 @@ something better and make it free software ?
 ## Project details
 
 ### Hardware
+
+<img src="pictures/rde-board-v2.0-fixed.jpg" alt="RetroDevEm Board v2.0 fixed"/>
 
 A PCB (Printed Circuit Board), with:
 - 2x ULN2003AN ICs (7 Darlington transistors per IC)
