@@ -1,7 +1,9 @@
 import time
 import logging
 import click
+
 from gpiozero import LED
+from gpiozero.exc import BadPinFactory
 
 from . import inputdevice as idev
 
@@ -159,6 +161,31 @@ class StMouse:
         self.worst_delay = 0
         logger.info(stats)
 
+def process_input_events(input_device, st_mouse):
+    dev = idev.InputDevice(device=input_device, blocking=False)
+
+    next_tick = time.monotonic() # time.monotonic is more accurate than time.time
+    next_stat = next_tick
+    while True:
+        # Retrieve every event in the queue
+        event_l = []
+        event = dev.get_event() # Non blocking
+        while event:
+            event_l.append(event)
+            event = dev.get_event()
+        st_mouse.process_events(event_l)
+
+        st_mouse.signals_tick()
+        next_tick += st_mouse.get_tick_period()
+        # Display some statistics
+        if time.monotonic() > next_stat:
+            st_mouse.display_stats()
+            next_stat += STATS_PERIOD
+        try:
+            time.sleep( next_tick - time.monotonic() )
+        except ValueError:
+            pass
+
 @click.command()
 @click.option("--board", default="v2.0", help="Board revision.", show_default=True)
 @click.option("--device", default="/dev/input/event0", help="Input device to use.", show_default=True)
@@ -173,31 +200,11 @@ def main(board, device, port, speed, debug):
     """
     if debug:
         logging.basicConfig(level=logging.DEBUG)
-
-    sm = StMouse(board_version=board, port=port, xy_scale=speed)
-    dev = idev.InputDevice(device=device, blocking=False)
-
-    next_tick = time.monotonic() # time.monotonic is more accurate than time.time
-    next_stat = next_tick
-    while True:
-        # Retrieve every event in the queue
-        event_l = []
-        event = dev.get_event() # Non blocking
-        while event:
-            event_l.append(event)
-            event = dev.get_event()
-        sm.process_events(event_l)
-
-        sm.signals_tick()
-        next_tick += sm.get_tick_period()
-        # Display some statistics
-        if time.monotonic() > next_stat:
-            sm.display_stats()
-            next_stat += STATS_PERIOD
-        try:
-            time.sleep( next_tick - time.monotonic() )
-        except ValueError:
-            pass
+    try:
+        sm = StMouse(board_version=board, port=port, xy_scale=speed)
+        process_input_events(device, sm)
+    except BadPinFactory as e:
+        logger.error(f"Failed to initialize GPIO pins: {e}")
 
 if __name__ == "__main__":
     main()

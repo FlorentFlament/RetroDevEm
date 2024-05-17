@@ -1,7 +1,9 @@
 import time
 import logging
 import click
+
 from gpiozero import LED
+from gpiozero.exc import BadPinFactory
 
 from . import inputdevice as idev
 
@@ -46,6 +48,31 @@ def rpi_init(board_version, port_id):
     pins = BOARDS_CONFIG[board_version][port_id]
     return {k:LED(v) for k,v in pins.items()}
 
+def process_input_events(input_device, board_signals):
+    dev = idev.InputDevice(input_device)
+    logger.info(f"Opened device: {input_device}")
+    while True:
+        _, _, ev_type, ev_code, ev_value = dev.get_event()
+        if  ev_type == idev.EV_ABS:
+            if   ev_code == idev.ABS_HAT0X:
+                logger.info(f"HAT0X move: {ev_value}")
+                if   ev_value == -1: board_signals["left"].on()
+                elif ev_value ==  1: board_signals["right"].on()
+                else: # ev_value == 0 when releasing a button
+                    board_signals["left"].off()
+                    board_signals["right"].off()
+            elif ev_code == idev.ABS_HAT0Y:
+                logger.info(f"HAT0Y move: {ev_value}")
+                if   ev_value == -1: board_signals["up"].on()
+                elif ev_value ==  1: board_signals["down"].on()
+                else: # ev_value == 0 when releasing a button
+                    board_signals["down"].off()
+                    board_signals["up"].off()
+        elif ev_type == idev.EV_KEY and ev_code == idev.BTN_SOUTH:
+                logger.info(f"FIRE button: {ev_value}")
+                if ev_value == 1: board_signals["fire"].on()
+                else: board_signals["fire"].off()
+
 @click.command()
 @click.option("--board", default="v2.0", help="Board revision.", show_default=True)
 @click.option("--device", default="/dev/input/event0", help="Input device to use.", show_default=True)
@@ -59,37 +86,17 @@ def main(device, board, port, debug):
     """
     if debug:
         logging.basicConfig(level=logging.DEBUG)
-
-    signals = rpi_init(board, port)
-    while True:
-        try:
-            dev = idev.InputDevice(device)
-            logger.info(f"Opened device: {device}")
-            while True:
-                _, _, ev_type, ev_code, ev_value = dev.get_event()
-                if  ev_type == idev.EV_ABS:
-                    if   ev_code == idev.ABS_HAT0X:
-                        logger.info(f"HAT0X move: {ev_value}")
-                        if   ev_value == -1: signals["left"].on()
-                        elif ev_value ==  1: signals["right"].on()
-                        else: # ev_value == 0 when releasing a button
-                            signals["left"].off()
-                            signals["right"].off()
-                    elif ev_code == idev.ABS_HAT0Y:
-                        logger.info(f"HAT0Y move: {ev_value}")
-                        if   ev_value == -1: signals["up"].on()
-                        elif ev_value ==  1: signals["down"].on()
-                        else: # ev_value == 0 when releasing a button
-                            signals["down"].off()
-                            signals["up"].off()
-                elif ev_type == idev.EV_KEY and ev_code == idev.BTN_SOUTH:
-                        logger.info(f"FIRE button: {ev_value}")
-                        if ev_value == 1: signals["fire"].on()
-                        else: signals["fire"].off()
-        except OSError as e:
-            # Sometimes gamepads gets disconnected with crap cables
-            logger.warning(f"Error getting event: {e}")
+    try:
+        signals = rpi_init(board, port)
+        while True:
+            try:
+                process_input_events(device, signals)
+            except OSError as e:
+                # Sometimes gamepads get temporarily disconnected with crap cables
+                logger.warning(f"Error getting event: {e}")
             time.sleep(0.2)
+    except BadPinFactory as e:
+        logger.error(f"Failed to initialize GPIO pins: {e}")
 
 if __name__ == "__main__":
     main()
