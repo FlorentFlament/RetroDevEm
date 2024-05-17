@@ -194,7 +194,7 @@ def process_input_events(input_device, st_mouse):
 @click.option("--debug/--no-debug", help="Display debugging information.", show_default=True)
 def main(board, device, port, speed, debug):
     """Send mouse events to an Atari ST connected to the RetroDevEm
-    board.  Usage example: atari-st-mouse --board v2.0 --device
+    board.  Usage example: atarist-mouse --board v2.0 --device
     /dev/input/event0 --port 0 --speed 4
 
     """

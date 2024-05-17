@@ -80,7 +80,7 @@ def process_input_events(input_device, board_signals):
 @click.option("--debug/--no-debug", help="Display debugging information.", show_default=True)
 def main(device, board, port, debug):
     """Send joystick/gamepad events to an Atari ST connected to the
-    RetroDevEm board.  Usage example: atari-st-joystick --board v2.0
+    RetroDevEm board.  Usage example: atarist-joystick --board v2.0
     --device /dev/input/event0 --port 0
 
     """

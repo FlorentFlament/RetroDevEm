@@ -153,28 +153,28 @@ Available devices:
 Select the device event number [0-7]: ^C
 ```
 
-Run the `atari-st-mouse` program to emulate a mouse on the Atari ST:
+Run the `atarist-mouse` program to emulate a mouse on the Atari ST:
 
 ```
-$ ./atari-st-mouse.py --device /dev/input/event7 &
+$ atarist-mouse --device /dev/input/event7 &
 [1] 1947
 ```
 
-Run the `atari-st-joystick` program to emulate a joystick on the Atari ST:
+Run the `atarist-joystick` program to emulate a joystick on the Atari ST:
 
 ```
-$ ./atari-st-joystick.py --device /dev/input/event4 &
+$ atarist-joystick --device /dev/input/event4 &
 [2] 1951
 ```
 
-Available options for the `atari-st-mouse` program:
+Available options for the `atarist-mouse` program:
 
 ```
-$ ./atari-st-mouse.py --help
-Usage: atari-st-mouse.py [OPTIONS]
+$ atarist-mouse --help
+Usage: atarist-mouse [OPTIONS]
 
   Send mouse events to an Atari ST connected to the RetroDevEm board.  Usage
-  example: atari-st-mouse --board v2.0 --device /dev/input/event0 --port 0
+  example: atarist-mouse --board v2.0 --device /dev/input/event0 --port 0
   --speed 4
 
 Options:
@@ -187,14 +187,14 @@ Options:
   --help                Show this message and exit.
 ```
 
-Available options for the `atari-st-joystick` program:
+Available options for the `atarist-joystick` program:
 
 ```
-$ ./atari-st-joystick.py --help
-Usage: atari-st-joystick.py [OPTIONS]
+$ atarist-joystick --help
+Usage: atarist-joystick [OPTIONS]
 
   Send joystick/gamepad events to an Atari ST connected to the RetroDevEm
-  board.  Usage example: atari-st-joystick --board v2.0 --device
+  board.  Usage example: atarist-joystick --board v2.0 --device
   /dev/input/event0 --port 0
 
 Options:
