@@ -11,7 +11,7 @@ The project consists of 2 components:
 - Hardware: A daughter printed circuit board, to be plugged on a Raspberry Pi;
 - Software: Programs running on the Raspberry Pi.
 
-<img src="pictures/pcb-v2.0.jpg" alt="RetroDevEm illustration"/>
+<img src="pictures/rde-board-v2.0-fixed.jpg" alt="RetroDevEm Board v2.0 fixed"/>
 
 The daughter board can be connected to the retro machines via DB-9
 terminated ribbon cables.
