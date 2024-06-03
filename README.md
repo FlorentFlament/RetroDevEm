@@ -39,7 +39,7 @@ something better and make it free software ?
 
 A PCB (Printed Circuit Board), with:
 - 2x ULN2003AN ICs (7 Darlington transistors per IC)
-- 14 15 KOhms resistors (optional)
+- 14x 15 KOhms resistors (optional)
 - 1x 40 pins socket (Raspberry Pi connector)
 - 2x 10 pins headers (Atari ports connectors)
 
