@@ -74,7 +74,7 @@ def process_input_events(input_device, board_signals):
                 else: board_signals["fire"].off()
 
 @click.command()
-@click.option("--board", default="v2.1", help="Board revision.", show_default=True)
+@click.option("--board", default="v2.1", type=click.Choice(['v2.0', 'v2.1']), help="Board revision.", show_default=True)
 @click.option("--device", default="/dev/input/event0", help="Input device to use.", show_default=True)
 @click.option("--port",  default=1, help="Board/Atari ST port to connect the joystick to.", show_default=True)
 @click.option("--debug/--no-debug", help="Display debugging information.", show_default=True)
