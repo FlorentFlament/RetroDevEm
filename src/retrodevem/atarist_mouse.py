@@ -187,7 +187,7 @@ def process_input_events(input_device, st_mouse):
             pass
 
 @click.command()
-@click.option("--board", default="v2.0", help="Board revision.", show_default=True)
+@click.option("--board", default="v2.1", help="Board revision.", show_default=True)
 @click.option("--device", default="/dev/input/event0", help="Input device to use.", show_default=True)
 @click.option("--port", default=0, help="Board/Atari port to connect the mouse to.", show_default=True)
 @click.option("--speed", default=2, help="Mouse speed divider (more = slower).", show_default=True)
