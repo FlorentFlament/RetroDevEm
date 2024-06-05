@@ -189,7 +189,7 @@ def process_input_events(input_device, st_mouse):
 @click.command()
 @click.option("--board" , "-b", default="v2.1", type=click.Choice(['v2.0', 'v2.1']), help="Board revision.", show_default=True)
 @click.option("--device", "-d", default="/dev/input/event0", help="Input device to use.", show_default=True)
-@click.option("--port"  , "-p", default=0, type=click.Choice(['0', '1']), help="Board/Atari port to connect the mouse to.", show_default=True)
+@click.option("--port"  , "-p", default='0', type=click.Choice(['0', '1']), help="Board/Atari port to connect the mouse to.", show_default=True)
 @click.option("--speed" , "-s", default=2, help="Mouse speed divider (more = slower).", show_default=True)
 @click.option("--debug/--no-debug", help="Display debugging information.", show_default=True)
 def main(board, device, port, speed, debug):
@@ -201,7 +201,7 @@ def main(board, device, port, speed, debug):
     if debug:
         logging.basicConfig(level=logging.DEBUG)
     try:
-        sm = StMouse(board_version=board, port=port, xy_scale=speed)
+        sm = StMouse(board_version=board, port=int(port), xy_scale=speed)
         process_input_events(device, sm)
     except BadPinFactory as e:
         logger.error(f"Failed to initialize GPIO pins: {e}")
