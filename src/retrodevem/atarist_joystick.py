@@ -97,6 +97,7 @@ def main(device, board, port, debug):
             time.sleep(0.2)
     except BadPinFactory as e:
         logger.error(f"Failed to initialize GPIO pins: {e}")
+        logger.error( "This program expects to be running on a Raspberry Pi. Is that the case ?")
 
 if __name__ == "__main__":
     main()
