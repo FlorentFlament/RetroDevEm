@@ -76,7 +76,7 @@ def process_input_events(input_device, board_signals):
 @click.command()
 @click.option("--board",  "-b", default="v2.1", type=click.Choice(['v2.0', 'v2.1']), help="Board revision.", show_default=True)
 @click.option("--device", "-d", default="/dev/input/event0", help="Input device to use.", show_default=True)
-@click.option("--port",   "-p", default=1, help="Board/Atari ST port to connect the joystick to.", show_default=True)
+@click.option("--port",   "-p", default=1, type=click.Choice(['0', '1']), help="Board/Atari ST port to connect the joystick to.", show_default=True)
 @click.option("--debug/--no-debug", help="Display debugging information.", show_default=True)
 def main(device, board, port, debug):
     """Send joystick/gamepad events to an Atari ST connected to the
