@@ -35,7 +35,7 @@ something better and make it free software ?
 
 ### Hardware
 
-<img src="pictures/rde-board-v2.0-fixed.jpg" alt="RetroDevEm Board v2.0 fixed"/>
+<img src="pictures/rde-board-v2.1.jpg" alt="RetroDevEm Board v2.1"/>
 
 A PCB (Printed Circuit Board), with:
 - 2x ULN2003AN ICs (7 Darlington transistors per IC)
