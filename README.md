@@ -99,6 +99,16 @@ daughter board).  The programs process events from input devices
 (mouse, gamepad) and send corresponding signals to the retro machine
 connected to the board.
 
+#### Prerequistes
+
+On a fresh raspbian (Linux raspberrypi 6.12.47+rpt-rpi-v8), the
+following 2 packages need to be installed: `swig`, `liblgpio-dev`,
+`evtest`.
+
+```
+$ sudo apt install swig liblgpio-dev evtest
+```
+
 #### Installation
 
 You need to create a virtualenv on your Raspberry Pi and activate it:
@@ -208,8 +218,8 @@ Options:
 
 ### Additional information
 
-- [Sourcing](sourcing.md)
-- [Mechanical details](mechanical.md)
+- [Sourcing](file:./doc/sourcing.md)
+- [Mechanical details](file:./doc/mechanical.md)
 
 #### Consoles and computers DB9 wiring
 
