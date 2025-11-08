@@ -1,0 +1,9 @@
+[Unit]
+Description=Atari ST Joystick emulator
+
+[Service]
+Type=exec
+ExecStart=/usr/local/venv/retrodevem/bin/atarist-joystick -d /dev/input/event1 -p 1
+
+[Install]
+WantedBy=default.target

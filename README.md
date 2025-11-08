@@ -111,36 +111,30 @@ $ sudo apt install swig liblgpio-dev evtest
 
 #### Installation
 
-You need to create a virtualenv on your Raspberry Pi and activate it:
+You need to create a virtualenv using the GPIO system packages on your
+Raspberry Pi:
 
 ```
-$ virtualenv venv/retrodevem
-created virtual environment CPython3.11.2.final.0-64 in 353ms
-  creator CPython3Posix(dest=/home/florent/venv/retrodevem, clear=False, no_vcs_ignore=False, global=False)
-  seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app_data_dir=/home/florent/.local/share/virtualenv)
-    added seed packages: pip==23.0.1, setuptools==66.1.1, wheel==0.38.4
-  activators BashActivator,CShellActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator
-$ source venv/retrodevem/bin/activate
+# mkdir -p /usr/local/venv
+# python3 -m venv --system-site-packages /usr/local/venv/retrodevem
 ```
 
-Then RetroDevEm can be install with pip:
+Then RetroDevEm can be installed in the virtual environment with pip:
 
 ```
-$ pip install retrodevem
-Looking in indexes: https://pypi.org/simple, https://www.piwheels.org/simple
+$ source /usr/local/venv/retrodevem/bin/activate
+(retrodevem) $ pip install retrodevem
 Collecting retrodevem
-  Using cached retrodevem-0.2-py3-none-any.whl (22 kB)
-Collecting click
-  Using cached https://www.piwheels.org/simple/click/click-8.1.7-py3-none-any.whl (97 kB)
-Collecting gpiozero
-  Using cached https://www.piwheels.org/simple/gpiozero/gpiozero-2.0.1-py3-none-any.whl (150 kB)
-Collecting lgpio
-  Using cached lgpio-0.2.2.0-cp311-cp311-manylinux_2_34_aarch64.whl (364 kB)
-Collecting colorzero
-  Using cached https://www.piwheels.org/simple/colorzero/colorzero-2.0-py2.py3-none-any.whl (26 kB)
-Requirement already satisfied: setuptools in ./venv/retrodevem/lib/python3.11/site-packages (from colorzero->gpiozero->retrodevem) (66.1.1)
-Installing collected packages: lgpio, colorzero, click, gpiozero, retrodevem
-Successfully installed click-8.1.7 colorzero-2.0 gpiozero-2.0.1 lgpio-0.2.2.0 retrodevem-0.2
+  Downloading retrodevem-0.9-py3-none-any.whl.metadata (12 kB)
+Collecting click (from retrodevem)
+  Downloading click-8.3.0-py3-none-any.whl.metadata (2.6 kB)
+Requirement already satisfied: gpiozero in /usr/lib/python3/dist-packages (from retrodevem) (2.0.1)
+Requirement already satisfied: lgpio in /usr/lib/python3/dist-packages (from retrodevem) (0.2.2.0)
+Requirement already satisfied: colorzero in /usr/lib/python3/dist-packages (from gpiozero->retrodevem) (2.0)
+Downloading retrodevem-0.9-py3-none-any.whl (23 kB)
+Downloading click-8.3.0-py3-none-any.whl (107 kB)
+Installing collected packages: click, retrodevem
+Successfully installed click-8.3.0 retrodevem-0.9
 ```
 
 #### Usage
@@ -215,6 +209,14 @@ Options:
   --debug / --no-debug  Display debugging information.  [default: no-debug]
   --help                Show this message and exit.
 ```
+
+#### Starting the services with systemd
+
+There are 2 service files in the `systemd` directory.  They need to be
+updated with the appropriate device and port.  Then can be copied to
+the `/etc/systemd/system` directory on the raspberry Pi.
+
+To enable them, use `systemctl enable` and `systemctl start`.
 
 ### Additional information
 

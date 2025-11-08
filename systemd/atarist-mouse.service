@@ -1,0 +1,9 @@
+[Unit]
+Description=Atari ST Mouse emulator
+
+[Service]
+Type=exec
+ExecStart=/usr/local/venv/retrodevem/bin/atarist-mouse -d /dev/input/event0 -p 0
+
+[Install]
+WantedBy=default.target
