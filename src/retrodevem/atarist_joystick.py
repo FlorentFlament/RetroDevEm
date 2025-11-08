@@ -54,6 +54,7 @@ def process_input_events(input_device, board_signals):
     while True:
         _, _, ev_type, ev_code, ev_value = dev.get_event()
         if  ev_type == idev.EV_ABS:
+
             if   ev_code == idev.ABS_HAT0X:
                 logger.info(f"HAT0X move: {ev_value}")
                 if   ev_value == -1: board_signals["left"].on()
@@ -61,6 +62,7 @@ def process_input_events(input_device, board_signals):
                 else: # ev_value == 0 when releasing a button
                     board_signals["left"].off()
                     board_signals["right"].off()
+
             elif ev_code == idev.ABS_HAT0Y:
                 logger.info(f"HAT0Y move: {ev_value}")
                 if   ev_value == -1: board_signals["up"].on()
@@ -68,6 +70,33 @@ def process_input_events(input_device, board_signals):
                 else: # ev_value == 0 when releasing a button
                     board_signals["down"].off()
                     board_signals["up"].off()
+
+            elif ev_code == idev.ABS_X:
+                if   ev_value <= 64 :
+                    logger.info(f"X (analog left) move: {ev_value}")
+                    board_signals["left"].on()
+                    board_signals["right"].off()
+                elif ev_value >= 192:
+                    logger.info(f"X (analog left) move: {ev_value}")
+                    board_signals["left"].off()
+                    board_signals["right"].on()
+                else: # 64 < ev_value < 192
+                    board_signals["left"].off()
+                    board_signals["right"].off()
+
+            elif ev_code == idev.ABS_Y:
+                if   ev_value <= 64 :
+                    logger.info(f"Y (analog left) move: {ev_value}")
+                    board_signals["up"].on()
+                    board_signals["down"].off()
+                elif ev_value >= 192:
+                    logger.info(f"Y (analog left) move: {ev_value}")
+                    board_signals["up"].off()
+                    board_signals["down"].on()
+                else: # 64 < ev_value < 192
+                    board_signals["up"].off()
+                    board_signals["down"].off()
+
         elif ev_type == idev.EV_KEY and ev_code == idev.BTN_SOUTH:
                 logger.info(f"FIRE button: {ev_value}")
                 if ev_value == 1: board_signals["fire"].on()

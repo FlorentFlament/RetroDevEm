@@ -23,6 +23,8 @@ BTN_RIGHT = 273 # Mouse right button
 ABS_HAT0X = 16 # Gamepad directional arrows left (-1) right (+1)
 ABS_HAT0Y = 17 # Gamepad directional arrows down (-1) up (+1)
 BTN_SOUTH = 304 # X button off (-1) on (+1)
+ABS_X     = 0 # Gamepad analog left-right axis [0, 255]
+ABS_Y     = 1 # Gamepad analog up-down axis [0, 255]
 
 # USB mouse events location
 USB_DEVICE = "/dev/input/event0"
