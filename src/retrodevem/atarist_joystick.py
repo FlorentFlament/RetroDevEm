@@ -44,11 +44,17 @@ BOARDS_CONFIG = {
     },
 }
 
+# Global state
+# Keep track of Gamepad hat being in use or not - Overrides the analog jostick
+hat0x_in_use = False
+hat0y_in_use = False
+
 def rpi_init(board_version, port_id):
     pins = BOARDS_CONFIG[board_version][port_id]
     return {k:LED(v) for k,v in pins.items()}
 
 def process_input_events(input_device, board_signals):
+    global hat0x_in_use, hat0y_in_use
     dev = idev.InputDevice(input_device)
     logger.info(f"Opened device: {input_device}")
     while True:
@@ -57,21 +63,31 @@ def process_input_events(input_device, board_signals):
 
             if   ev_code == idev.ABS_HAT0X:
                 logger.info(f"HAT0X move: {ev_value}")
-                if   ev_value == -1: board_signals["left"].on()
-                elif ev_value ==  1: board_signals["right"].on()
+                if   ev_value == -1:
+                    board_signals["left"].on()
+                    hat0x_in_use = True
+                elif ev_value ==  1:
+                    board_signals["right"].on()
+                    hat0x_in_use = True
                 else: # ev_value == 0 when releasing a button
                     board_signals["left"].off()
                     board_signals["right"].off()
+                    hat0x_in_use = False
 
             elif ev_code == idev.ABS_HAT0Y:
                 logger.info(f"HAT0Y move: {ev_value}")
-                if   ev_value == -1: board_signals["up"].on()
-                elif ev_value ==  1: board_signals["down"].on()
+                if   ev_value == -1:
+                    board_signals["up"].on()
+                    hat0y_in_use = True
+                elif ev_value ==  1:
+                    board_signals["down"].on()
+                    hat0y_in_use = True
                 else: # ev_value == 0 when releasing a button
                     board_signals["down"].off()
                     board_signals["up"].off()
+                    hat0y_in_use = False
 
-            elif ev_code == idev.ABS_X:
+            elif ( not hat0x_in_use ) and ( ev_code == idev.ABS_X ):
                 if   ev_value <= 64 :
                     logger.info(f"X (analog left) move: {ev_value}")
                     board_signals["left"].on()
@@ -84,7 +100,7 @@ def process_input_events(input_device, board_signals):
                     board_signals["left"].off()
                     board_signals["right"].off()
 
-            elif ev_code == idev.ABS_Y:
+            elif ( not hat0y_in_use ) and ( ev_code == idev.ABS_Y ):
                 if   ev_value <= 64 :
                     logger.info(f"Y (analog left) move: {ev_value}")
                     board_signals["up"].on()
