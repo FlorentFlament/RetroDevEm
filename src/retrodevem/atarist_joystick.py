@@ -5,8 +5,7 @@ import click
 from gpiozero import LED
 from gpiozero.exc import BadPinFactory
 
-# From current package
-import inputdevice as idev
+from . import inputdevice as idev
 
 logger = logging.getLogger(__name__)
 
